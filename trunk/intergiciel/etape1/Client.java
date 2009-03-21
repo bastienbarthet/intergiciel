@@ -2,9 +2,13 @@ import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.*;
 import java.net.*;
+import java.util.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
 
+	// attribut liste de type hasmap pour avoir l'ensemble des Shared Objects
+	private HashMap liste;
+	
 	public Client() throws RemoteException {
 		super();
 	}
@@ -16,10 +20,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// initialization of the client layer
 	public static void init() {
+		
 	}
 	
 	// lookup in the name server
 	public static SharedObject lookup(String name) {
+		return this.liste.get(name);
 	}		
 	
 	// binding in the name server
@@ -28,6 +34,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// creation of a shared object
 	public static SharedObject create(Object o) {
+		SharedObject so = new SharedObject(1, o.toString(), o);
+		this.liste.put(so, so.getName());
+		return so;
 	}
 	
 /////////////////////////////////////////////////////////////
