@@ -14,6 +14,9 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public int getLock() {
 		return this.lock;
 	}
+	public void setLock(int newLock) {
+		this.lock = newLock;
+	}
 	
 	// objet sur lequel pointe le shared object
 	private Object o;

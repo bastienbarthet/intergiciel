@@ -72,10 +72,13 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a reader invalidation request from the server
 	public void invalidate_reader(int id) throws java.rmi.RemoteException {
+		// il faut retrouver ds la hashtalbe le shared object qui a le num "id"
+		// et faire so.setLock(NL);
 	}
 
 
 	// receive a writer invalidation request from the server
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
+		
 	}
 }
