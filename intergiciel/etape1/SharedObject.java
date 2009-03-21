@@ -3,29 +3,43 @@ import java.io.*;
 public class SharedObject implements Serializable, SharedObject_itf {
 	
 	// defition des etats d'un shared object
-	public static final String NL = 0;			// no local read
-	public static final String RLC = 1;			// real lock caches (not taken)
-	public static final String WLC = 2;			// write lock cached
-	public static final String RTL = 3;			// read lock taken
-	public static final String WLT = 4;			// write lock taken
-	public static final String RTL_WLC = 5;		// read lock taken and write lock cached
+	public static final int NL = 0;				// no local read
+	public static final int RLC = 1;			// real lock caches (not taken)
+	public static final int RTL = 3;			// read lock taken
+	public static final int WLT = 4;			// write lock taken
+	public static final int RTL_WLC = 5;		// read lock taken and write lock cached
 		
 	// variable d'etat du shared object
 	private int lock;
+	public int getLock() {
+		return this.lock;
+	}
 	
 	// objet sur lequel pointe le shared object
 	private Object o;
+	public Object getObject() {
+		return this.o;
+	}
 	
 	// idantifiant de l'objet
 	private int id;
-	
-	// constructeur
-	SharedObject (int id){
-		this.id = id;
-		this.lock = NL;
-		this.o = null;
+	public int getId() {
+		return this.id;
 	}
 	
+	// nom du sharedObject
+	private String name;
+	public String getName(){
+		return this.name;
+	}
+	
+	// constructeur
+	public SharedObject (int id, String name, Object o){
+		this.id = id;
+		this.name = name;
+		this.lock = NL;
+		this.o = o;
+	}
 	
 	// invoked by the user program on the client node
 	public void lock_read() {
