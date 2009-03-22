@@ -7,7 +7,7 @@ import java.util.*;
 public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// attribut liste de type hasmap pour avoir l'ensemble des Shared Objects
-	private static Hashtable<String, SharedObject> listeClient;
+	private static Hashtable<Integer, SharedObject> listeObjets;
 	
 	public Client() throws RemoteException {
 		super();
@@ -32,7 +32,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	// lookup in the name server
 	public SharedObject lookup(String name) {
-		return listeClient.get(name);
+		//return listeClient.get(name);
 	}		
 	
 	// binding in the name server
@@ -47,8 +47,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// creation of a shared object
 	public static SharedObject create(Object o) {
-		SharedObject so = new SharedObject(1, o.toString(), o);
-		listeClient.put(so.getName(), so);
+		SharedObject so = new SharedObject(1, o);
+		listeObjets.put(so.getId(), so);
 		return so;
 	}
 	
@@ -58,7 +58,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// request a read lock from the server
 	public static Object lock_read(int id) {
-		//return listeClient.get(name).getLock();
+		// demander au serveur si personne ecrit
+		//listeObjets.get(id).setLock(SharedObject.RTL);
+		return listeObjets.get(id);
 	}
 
 	// request a write lock from the server
