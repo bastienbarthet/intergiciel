@@ -30,16 +30,9 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		return this.id;
 	}
 	
-	// nom du sharedObject
-	private String name;
-	public String getName(){
-		return this.name;
-	}
-	
 	// constructeur
-	public SharedObject (int id, String name, Object o){
+	public SharedObject (int id, Object o){
 		this.id = id;
-		this.name = name;
 		this.lock = NL;
 		this.o = o;
 	}
