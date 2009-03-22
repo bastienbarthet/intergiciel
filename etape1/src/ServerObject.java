@@ -1,14 +1,19 @@
 import java.io.Serializable;
+import java.util.List;
 
 
 public class ServerObject implements Serializable{
 
-	private List<int> listeDesClient;
+	// liste des clients
+	private List<Integer> listeDesClient;
 	
-	// variable d'etat du server object
-	private int lock;
-	public int getLock() {
-		return this.lock;
+	// mode de verouillage du server object
+	private int ecrivain;
+	public int getEcrivain() {
+		return this.ecrivain;
+	}
+	public void setEcrivain(int i) {
+		this.ecrivain = i;
 	}
 	
 	// objet sur lequel pointe le server object
@@ -17,23 +22,16 @@ public class ServerObject implements Serializable{
 		return this.o;
 	}
 	
-	// idantifiant de l'objet
+	// identifiant de l'objet
 	private int id;
 	public int getId() {
 		return this.id;
 	}
 	
-	// nom du serverObject
-	private String name;
-	public String getName(){
-		return this.name;
-	}
-	
 	// constructeur
-	public ServerObject (int id, String name, Object o){
+	public ServerObject (int id, Object o){
 		this.id = id;
-		this.name = name;
-		this.lock = NL;
+		this.ecrivain = 0;
 		this.o = o;
 	}
 	
