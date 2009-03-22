@@ -31,7 +31,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}
 	
 	// lookup in the name server
-	public SharedObject lookup(String name) throws MalformedURLException, RemoteException, NotBoundException {
+	public SharedObject lookup(String name) throws Exception {
 		return (SharedObject)(Naming.lookup(name));	
 	}		
 	
