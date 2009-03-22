@@ -31,8 +31,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}
 	
 	// lookup in the name server
-	public SharedObject lookup(String name) {
-		//return listeClient.get(name);
+	public SharedObject lookup(String name) throws MalformedURLException, RemoteException, NotBoundException {
+		return (SharedObject)(Naming.lookup(name));	
 	}		
 	
 	// binding in the name server
@@ -65,10 +65,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// request a write lock from the server
 	public static Object lock_write (int id) {
+		return listeObjets.get(id);
 	}
 
 	// receive a lock reduction request from the server
 	public Object reduce_lock(int id) throws java.rmi.RemoteException {
+		return listeObjets.get(id);
 	}
 
 
@@ -81,6 +83,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a writer invalidation request from the server
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
-		
+		return listeObjets.get(id);
 	}
 }
