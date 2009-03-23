@@ -24,6 +24,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			// surement le rmi a initialiser avec un serveur.connect() 
 			int port = 1418;
 			Registry r = LocateRegistry.createRegistry(port);
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -32,7 +34,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	// lookup in the name server
 	public SharedObject lookup(String name) throws Exception {
-		return (SharedObject)(Naming.lookup(name));	
+		// Ok cette fonction est necessaire, ainsi que le nom d'un shared object
+		// Je ne pense que l'on puisse caster le retour du lookup directement en SharedObject. On récupere un objet
+		return (SharedObject) (Naming.lookup(name));	
 	}		
 	
 	// binding in the name server
