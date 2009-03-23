@@ -18,6 +18,16 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public void setLock(int newLock) {
 		this.lock = newLock;
 	}
+
+	// variable de nom du shared object
+	private String name;
+	public String getName() {
+		return this.name;
+	}
+	public void setName(String newName) {
+		this.name = newName;
+	}
+	
 	
 	// objet sur lequel pointe le shared object
 	private Object o;
