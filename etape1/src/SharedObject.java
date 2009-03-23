@@ -65,32 +65,32 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// invoked by the user program on the client node
 	public synchronized void unlock() {
 		switch (this.getLock()) {
-		case RLT : this.setLock(RLC); break;
-		case WLT : this.setLock(WLC); break;
-		case RLT_WLC : this.setLock(WLC); break;
-		default : break;
+			case RLT : this.setLock(RLC); break;
+			case WLT : this.setLock(WLC); break;
+			case RLT_WLC : this.setLock(WLC); break;
+			default : break;
 		}
 	}
 
 
 	// callback invoked remotely by the server
 	public synchronized Object reduce_lock() {
-		// permet au serveur de réclamer le passage d'un verrou de l'écriture a la lecture
+		// permet au serveur de rï¿½clamer le passage d'un verrou de l'ï¿½criture a la lecture
 		switch (this.getLock()) {
-		
-		case NL : break;
-		case RLC :  break;
-		case WLC : this.setLock(RLC); break;
-		// probleme sur ces 2 ci dessous!! Il faut waiter que l'appli ai fini pour passer en lecteur...
-			// Solution pour WLT : le serveur sait si ce shared object écrit, et va pa lui dire merde
-			// Solution pour RLT : il faut waiter...
-		case RLT : this.setLock(RLC); break;
-		case WLT : this.setLock(WLC); break;
-			// case RLT_WLC : il faut waiter aussi
-		case RLT_WLC : this.setLock(WLC); break;
-		default : break;
+			
+			case NL : break;
+			case RLC :  break;
+			case WLC : this.setLock(RLC); break;
+			// probleme sur ces 2 ci dessous!! Il faut waiter que l'appli ai fini pour passer en lecteur...
+				// Solution pour WLT : le serveur sait si ce shared object ï¿½crit, et va pa lui dire merde
+				// Solution pour RLT : il faut waiter...
+			case RLT : this.setLock(RLC); break;
+			case WLT : this.setLock(WLC); break;
+				// case RLT_WLC : il faut waiter aussi
+			case RLT_WLC : this.setLock(WLC); break;
+			default : break;
 		}
-	return null; // On est sencer renvoyé qq chose?? moi je crois pas..
+	return null; // On est sencer renvoyï¿½ qq chose?? moi je crois pas..
 	}
 
 	// callback invoked remotely by the server
@@ -98,26 +98,26 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		// 2 cas : RLT ou RLC
 		switch (this.getLock()) {
 		
-		//case RLT : il faut waiter
-		case RLT : break;
-		//cas RLC, on invalide
-		case RLC :  this.setLock(NL); break;
-		case RLT_WLC : break; // il faut waiter...
-		case WLC :  this.setLock(NL); break;
-		// case WLT : pas possible, le serveur va pas invalider l'écrivain en cours
-		default : break;
+			//case RLT : il faut waiter
+			case RLT : break;
+			//cas RLC, on invalide
+			case RLC :  this.setLock(NL); break;
+			case RLT_WLC : break; // il faut waiter...
+			case WLC :  this.setLock(NL); break;
+			// case WLT : pas possible, le serveur va pas invalider l'ï¿½crivain en cours
+			default : break;
 		}
 		
 	}
 
 	public synchronized Object invalidate_writer() {
-	switch (this.getLock()) {
+		switch (this.getLock()) {
 		
-		//Le serveur ne peut invalider que des WLC selon moi..
-		case WLC :  this.setLock(NL); break;
-		default : break;
-	}
+			//Le serveur ne peut invalider que des WLC selon moi..
+			case WLC :  this.setLock(NL); break;
+			default : break;
+		}
 		return null;
-}
+	}
 	
 }
