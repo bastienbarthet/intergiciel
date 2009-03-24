@@ -123,7 +123,6 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
 	public synchronized Object invalidate_writer() {
 		switch (this.lock) {
-		
 			//Le serveur ne peut invalider que des WLC selon moi..
 			case WLC :  this.lock = NL; break;
 			default : break;
