@@ -51,8 +51,8 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// invoked by the user program on the client node
 	public void lock_read() {
 		// si RLC, direct RLT
-		if (this.getLock()==RLC) {
-			this.setLock(RLT);
+		if (this.lock == RLC) {
+			this.lock = RLT;
 		}
 		else {
 			// ici il faut appeler lock_read du client, pour que celui ci demande le lock_read au serveur			
@@ -63,8 +63,8 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// invoked by the user program on the client node
 	public void lock_write() {
 		// si RLC, direct RLT
-		if (this.getLock()==WLC) {
-			this.setLock(WLT);
+		if (this.lock==WLC) {
+			this.lock = WLT;
 		}
 		else {
 			// ici il faut appeler lock_write du client, pour que celui ci demande le lock_read au serveur et obtienne si necessaire une nouvelle copie			
@@ -74,7 +74,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
 	// invoked by the user program on the client node
 	public synchronized void unlock() {
-		switch (lock) {
+		switch (this.lock) {
 			case RLT : this.lock = RLC; break;
 			case WLT : this.lock = WLC; break;
 			case RLT_WLC : this.lock = WLC; break;
@@ -86,7 +86,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// callback invoked remotely by the server
 	public synchronized Object reduce_lock() {
 		// permet au serveur de r�clamer le passage d'un verrou de l'�criture a la lecture
-		switch (lock) {
+		switch (this.lock) {
 			
 			case NL : break;
 			case RLC :  break;
@@ -106,7 +106,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// callback invoked remotely by the server
 	public synchronized void invalidate_reader() {
 		// 2 cas : RLT ou RLC
-		switch (lock) {
+		switch (this.lock) {
 		
 			//case RLT : il faut waiter
 			case RLT : break;
@@ -121,7 +121,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	}
 
 	public synchronized Object invalidate_writer() {
-		switch (lock) {
+		switch (this.lock) {
 		
 			//Le serveur ne peut invalider que des WLC selon moi..
 			case WLC :  this.lock = NL; break;

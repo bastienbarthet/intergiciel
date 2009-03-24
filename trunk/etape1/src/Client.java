@@ -7,6 +7,7 @@ import java.util.*;
 public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// attribut liste de type hasmap pour avoir l'ensemble des Shared Objects
+	// <id, sharedobject>
 	private static Hashtable<Integer, SharedObject> listeObjets;
 	
 	public Client() throws RemoteException {
@@ -34,15 +35,17 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	// lookup in the name server
 	public SharedObject lookup(String name) throws Exception {
-		// Ok cette fonction est necessaire, ainsi que le nom d'un shared object
-		// Je ne pense que l'on puisse caster le retour du lookup directement en SharedObject. On récupere un objet
+		// on regarde si on l'a en cached, sinon on la demande au serveur. et on renvoi null si le serveur ne la pas. 
+		// (mais je pense que c le serveur qui renvoi null si il ne la pas)
+		
 		return (SharedObject) (Naming.lookup(name));	
 	}		
 	
 	// binding in the name server
 	public static void register(String name, SharedObject_itf so) {
+		// on envoi un sharedobject o serveur, pour l'ajouter au partage
 		try {
-			Naming.rebind("//localhost:"+name, (Remote)(so));	
+			Naming.rebind("//localhost:"+name, (Remote)(so));	 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,6 +54,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// creation of a shared object
 	public static SharedObject create(Object o) {
+		// ici on creer un sharedobject, dan le but de l'envoyer au serveur pr le partager
 		SharedObject so = new SharedObject(1, o);
 		listeObjets.put(so.getId(), so);
 		return so;

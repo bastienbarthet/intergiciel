@@ -23,7 +23,7 @@ public class Server implements Server_itf {
 
 	@Override
 	public int lookup(String name) throws RemoteException {
-		// TODO Auto-generated method stub
+		// 
 		return 0;
 	}
 
