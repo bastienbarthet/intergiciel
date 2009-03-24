@@ -6,6 +6,15 @@ import java.util.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
 
+	public static final int NL = 0;				// no local read
+	public static final int RLC = 1;			// real lock caches (not taken)
+	public static final int WLC = 2;			// write lock cached
+	public static final int RLT = 3;			// read lock taken
+	public static final int WLT = 4;			// write lock taken
+	public static final int RLT_WLC = 5;		// read lock taken and write lock cached
+	
+	
+	
 	// attribut liste de type hasmap pour avoir l'ensemble des Shared Objects
 	// <id, sharedobject>
 	private static Hashtable<Integer, SharedObject> listeObjets;
@@ -36,23 +45,18 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}
 	
 	// lookup in the name server
-	public SharedObject lookup(String name) throws Exception {
-		
+	public SharedObject lookup(String name) throws Exception {	
 		// si on l'a, on le renvoi, sinon on le demande au serveur
-		int id =  server.lookup(name);
-		
+		int id =  server.lookup(name);	
 		if (id==0) {
 			return null;
 		}
 		else {
 			Object o = lock_read(id);
 			SharedObject so = new SharedObject(id, o);
-			listeObjets.put(id, so);
 			so.unlock();
 			return so;	
-		}
-		
-			
+		}	
 	}		
 
 
@@ -60,25 +64,18 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static void register(String name, SharedObject_itf so) {
 		// on envoi un sharedobject o serveur, pour l'ajouter au partage
 		try {
-			
-			listeObjets.put(((SharedObject) so).getId(), ((SharedObject) so));
-			
 			server.register(name, ((SharedObject) so).getId());
-						
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	// creation of a shared object
 	public static SharedObject create(Object o) throws RemoteException {
-		// ici on creer un sharedobject, dan le but de l'envoyer au serveur pr le partager
-		
+		// creations du shared object a partir de l'id  renvoyé par le create du server
 		int id = server.create(o);
 		SharedObject so = new SharedObject(id, o);
+		listeObjets.put(id, so);
 		return so;
 	}
 	
@@ -108,6 +105,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public void invalidate_reader(int id) throws java.rmi.RemoteException {
 		// il faut retrouver ds la hashtalbe le shared object qui a le num "id"
 		// et faire so.setLock(NL);
+		listeObjets.get(id).setLock(NL);
 	}
 
 
