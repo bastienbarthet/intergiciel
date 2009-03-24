@@ -55,6 +55,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			this.lock = RLT;
 		}
 		else {
+			
 			// ici il faut appeler lock_read du client, pour que celui ci demande le lock_read au serveur			
 		}
 

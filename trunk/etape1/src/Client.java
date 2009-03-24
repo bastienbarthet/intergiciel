@@ -10,6 +10,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// <id, sharedobject>
 	private static Hashtable<Integer, SharedObject> listeObjets;
 	
+	private static Server server;
+	
 	public Client() throws RemoteException {
 		super();
 	}
@@ -22,10 +24,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// initialization of the client layer
 	public static void init() {
 		try {
-			// surement le rmi a initialiser avec un serveur.connect() 
-			int port = 1418;
-			Registry r = LocateRegistry.createRegistry(port);
 			
+			// faire un lookup pr récup la ref du serveur
+			
+			server = (Server) Naming.lookup("//localhost:"+Registry.REGISTRY_PORT);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -35,17 +37,36 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	// lookup in the name server
 	public SharedObject lookup(String name) throws Exception {
-		// on regarde si on l'a en cached, sinon on la demande au serveur. et on renvoi null si le serveur ne la pas. 
-		// (mais je pense que c le serveur qui renvoi null si il ne la pas)
 		
-		return (SharedObject) (Naming.lookup(name));	
+		// si on l'a, on le renvoi, sinon on le demande au serveur
+		int id =  server.lookup(name);
+		
+		if (id==0) {
+			return null;
+		}
+		else {
+			Object o = lock_read(id);
+			SharedObject so = new SharedObject(id, o);
+			listeObjets.put(id, so);
+			so.unlock();
+			return so;	
+		}
+		
+			
 	}		
-	
+
+
 	// binding in the name server
 	public static void register(String name, SharedObject_itf so) {
 		// on envoi un sharedobject o serveur, pour l'ajouter au partage
 		try {
-			Naming.rebind("//localhost:"+name, (Remote)(so));	 
+			
+			listeObjets.put(((SharedObject) so).getId(), ((SharedObject) so));
+			
+			server.register(name, ((SharedObject) so).getId());
+						
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -53,10 +74,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}
 
 	// creation of a shared object
-	public static SharedObject create(Object o) {
+	public static SharedObject create(Object o) throws RemoteException {
 		// ici on creer un sharedobject, dan le but de l'envoyer au serveur pr le partager
-		SharedObject so = new SharedObject(1, o);
-		listeObjets.put(so.getId(), so);
+		
+		int id = server.create(o);
+		SharedObject so = new SharedObject(id, o);
 		return so;
 	}
 	

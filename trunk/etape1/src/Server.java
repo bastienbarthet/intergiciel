@@ -1,12 +1,42 @@
-import java.rmi.RemoteException;
+import java.net.MalformedURLException;
+import java.rmi.*;
+import java.rmi.registry.*;
+import java.util.Hashtable;
 
 
 public class Server implements Server_itf {
 
+	private int compteurID=1;
+	
+	// <name, serverobject> 
+	private Hashtable<String, ServerObject> ListeServerObject;
+	
+	
+	public static void main(String[] args) {
+	
+		try{
+			
+			// creation du serveur!
+			int port = Registry.REGISTRY_PORT;
+			LocateRegistry.createRegistry(port);
+			Server server = new Server();
+			Naming.rebind("//localhost:"+port, server);
+		
+		
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	@Override
 	public int create(Object o) throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+		// on cree un serverobject, on genere un id, on le renvoi o client
+			ServerObject so = new ServerObject(o);
+			return ++compteurID;
+
 	}
 
 	@Override
@@ -23,8 +53,15 @@ public class Server implements Server_itf {
 
 	@Override
 	public int lookup(String name) throws RemoteException {
-		// 
-		return 0;
+		ServerObject so = this.ListeServerObject.get(name);
+		if (so==null) {
+			return 0;
+		}
+		else {
+		return 	++compteurID;
+		}
+			
+		
 	}
 
 	@Override
