@@ -1,7 +1,6 @@
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.*;
-import java.net.*;
 import java.util.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
@@ -33,11 +32,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// initialization of the client layer
 	public static void init() {
 		try {
-			
 			// faire un lookup pr récup la ref du serveur
-			
 			server = (Server) Naming.lookup("//localhost:"+Registry.REGISTRY_PORT);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
