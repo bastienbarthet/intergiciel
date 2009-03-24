@@ -6,6 +6,9 @@ public class ServerObject implements Serializable{
 
 	// liste des clients
 	private List<Integer> listeDesLecteurs;
+	public List<Integer> getListe() {
+		return this.listeDesLecteurs;
+	}
 	
 	// mode de verouillage du server object
 	private int ecrivain;
@@ -29,8 +32,7 @@ public class ServerObject implements Serializable{
 	}
 	
 	// constructeur
-	public ServerObject (String _name, Object o){
-		this.name = _name;
+	public ServerObject (Object o){
 		this.ecrivain = 0;
 		this.o = o;
 	}
