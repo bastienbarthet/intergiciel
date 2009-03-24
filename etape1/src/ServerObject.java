@@ -5,7 +5,7 @@ import java.util.List;
 public class ServerObject implements Serializable{
 
 	// liste des clients
-	private List<Integer> listeDesClient;
+	private List<Integer> listeDesLecteurs;
 	
 	// mode de verouillage du server object
 	private int ecrivain;
@@ -22,15 +22,15 @@ public class ServerObject implements Serializable{
 		return this.o;
 	}
 	
-	// identifiant de l'objet
-	private int id;
-	public int getId() {
-		return this.id;
+	// nom de l'objet
+	private String name;
+	public String getName() {
+		return this.name;
 	}
 	
 	// constructeur
-	public ServerObject (int id, Object o){
-		this.id = id;
+	public ServerObject (String _name, Object o){
+		this.name = _name;
 		this.ecrivain = 0;
 		this.o = o;
 	}
