@@ -37,6 +37,10 @@ public class Server implements Server_itf {
 
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
 		// on rajoute a l'objet que ya qn en train de lire dessus
+		
+		// IF ECRIVAIN, VA TE FAIRE FOUTRE
+		
+		// SINON ON TE DONNE LE DROIT DE LECTURE
 		this.ListeObjetsServerObject.get(id).getListe().add(id);
 		// va renvoyer un truc de ce genre
 		return this.ListeObjetsServerObject.get(id);
@@ -44,6 +48,8 @@ public class Server implements Server_itf {
 
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
 		this.ListeObjetsServerObject.get(id).setEcrivain(id);
+		// si yazvai deja un ecrivain, il faut l'invalider
+		// il faut aussi invalider tout les lecteurs
 		this.ListeObjetsServerObject.get(id).getListe().remove(id);
 		return this.ListeObjetsServerObject.get(id);
 	}
