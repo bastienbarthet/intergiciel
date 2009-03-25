@@ -5,6 +5,7 @@ import java.util.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
 
+	private static final long serialVersionUID = -6547940558906997763L;
 	public static final int NL = 0;				// no local read
 	public static final int RLC = 1;			// real lock caches (not taken)
 	public static final int WLC = 2;			// write lock cached
@@ -17,6 +18,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// attribut liste de type hasmap pour avoir l'ensemble des Shared Objects
 	// <id, sharedobject>
 	private static Hashtable<Integer, SharedObject> listeObjets;
+	
+	public static Client_itf instance = null; 
 	
 	private static Server server;
 	
@@ -32,6 +35,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// initialization of the client layer
 	public static void init() {
 		try {
+			Client.instance = new Client();
 			// faire un lookup pr rÃ©cup la ref du serveur
 			server = (Server) Naming.lookup("//localhost:"+Registry.REGISTRY_PORT);
 		} catch (Exception e) {
@@ -68,7 +72,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// creation of a shared object
 	public static SharedObject create(Object o) throws RemoteException {
-		// creations du shared object a partir de l'id  renvoyé par le create du server
+		// creations du shared object a partir de l'id  renvoyï¿½ par le create du server
 		int id = server.create(o);
 		SharedObject so = new SharedObject(id, o);
 		listeObjets.put(id, so);

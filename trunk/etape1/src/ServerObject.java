@@ -4,6 +4,8 @@ import java.util.List;
 
 public class ServerObject implements Serializable{
 
+	private static final long serialVersionUID = -7396577889952667013L;
+	
 	// liste des clients
 	private List<Integer> listeDesLecteurs;
 	public List<Integer> getListe() {
