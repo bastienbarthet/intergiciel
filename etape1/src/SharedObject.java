@@ -2,6 +2,8 @@ import java.io.*;
 
 public class SharedObject implements Serializable, SharedObject_itf {
 	
+	private static final long serialVersionUID = -299256425145734063L;
+	
 	// defition des etats d'un shared object
 	public static final int NL = 0;				// no local read
 	public static final int RLC = 1;			// real lock caches (not taken)

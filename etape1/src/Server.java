@@ -26,7 +26,6 @@ public class Server implements Server_itf {
 	
 	
 	
-	@Override
 	public int create(Object o) throws RemoteException {
 		// on cree un serverobject, on genere un id, on le renvoi o client
 		ServerObject so = new ServerObject(o);
@@ -36,7 +35,6 @@ public class Server implements Server_itf {
 
 	}
 
-	@Override
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
 		// on rajoute a l'objet que ya qn en train de lire dessus
 		this.ListeObjetsServerObject.get(id).getListe().add(id);
@@ -44,14 +42,12 @@ public class Server implements Server_itf {
 		return this.ListeObjetsServerObject.get(id);
 	}
 
-	@Override
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
 		this.ListeObjetsServerObject.get(id).setEcrivain(id);
 		this.ListeObjetsServerObject.get(id).getListe().remove(id);
 		return this.ListeObjetsServerObject.get(id);
 	}
 
-	@Override
 	public int lookup(String name) throws RemoteException {
 		if (!this.ListeNomsServerObject.containsKey(name)) {
 			return 0;
@@ -61,7 +57,6 @@ public class Server implements Server_itf {
 		}	
 	}
 
-	@Override
 	public void register(String name, int id) throws RemoteException {
 		// on inscrit un nom ds la liste des noms d'objets
 		this.ListeNomsServerObject.put(name, id);
