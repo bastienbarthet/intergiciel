@@ -33,6 +33,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 			String URL = InetAddress.getLocalHost().getHostName();
 			Server server = new Server();
 			Naming.rebind("//"+URL+":/toto", server);
+			System.out.println("Serveur toto is running ...");
 		}
 		catch (Exception e){
 			e.printStackTrace();
