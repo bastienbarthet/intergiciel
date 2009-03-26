@@ -20,8 +20,8 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	private int compteurID=1;
 	
-	private  Hashtable<String, Integer> ListeNomsServerObject;
-	private  Hashtable<Integer, ServerObject> ListeObjetsServerObject;
+	public  static Hashtable<String, Integer> ListeNomsServerObject;
+	public  static Hashtable<Integer, ServerObject> ListeObjetsServerObject;
 	
 	
 	public static void main(String[] args) {
@@ -32,7 +32,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 			String URL = InetAddress.getLocalHost().getHostName();
 			Server server = new Server();
 			Naming.rebind("//"+URL+":/toto", server);
-			System.out.println("Serveur toto is running ...");
+			System.out.println("Serveur toto is running ...");	
 		}
 		catch (Exception e){
 			e.printStackTrace();
@@ -45,14 +45,14 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		// on cree un serverobject, on genere un id, on le renvoi o client
 		ServerObject so = new ServerObject(o);
 		// on le rajoute dans la listes des objet
-		this.ListeObjetsServerObject.put(compteurID, so);
+		ListeObjetsServerObject.put(compteurID, so);
 		return ++compteurID;
 
 	}
 
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
-		if (this.ListeObjetsServerObject.contains(id)) {
-			return this.ListeObjetsServerObject.get(id).lock_read(id, client);
+		if (ListeObjetsServerObject.contains(id)) {
+			return ListeObjetsServerObject.get(id).lock_read(id, client);
 		}
 		else {
 			return null;
@@ -61,21 +61,21 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		}
 
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
-		return this.ListeObjetsServerObject.get(id).lock_write(id, client);
+		return ListeObjetsServerObject.get(id).lock_write(id, client);
 		}
 
 	public int lookup(String name) throws RemoteException {
-		if (!this.ListeNomsServerObject.containsKey(name)) {
-			return 0;
+		if (ListeNomsServerObject.containsKey(name)) {
+			return (ListeNomsServerObject.get(name));
 		}
 		else {
-			return (this.ListeNomsServerObject.get(name));
+			return 0;
 		}	
 	}
 
 	public void register(String name, int id) throws RemoteException {
 		// on inscrit un nom ds la liste des noms d'objets
-		this.ListeNomsServerObject.put(name, id);
+		ListeNomsServerObject.put(name, id);
 	}
 
 }
