@@ -1,4 +1,5 @@
 import java.io.*;
+import java.rmi.RemoteException;
 
 public class SharedObject implements Serializable, SharedObject_itf {
 	
@@ -57,22 +58,35 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			this.lock = RLT;
 		}
 		else {
-			
-			// ici il faut appeler lock_read du client, pour que celui ci demande le lock_read au serveur			
+			try {
+				// ici il faut appeler lock_read du client, pour que celui ci demande le lock_read au serveur
+				Object obj = Client.lock_read(this.getId());
+				this.o = obj;
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+			this.lock = RLT;
 		}
 
 	}
 
 	// invoked by the user program on the client node
 	public void lock_write() {
-		// si RLC, direct RLT
-		if (this.lock==WLC) {
+		// si WLC, direct WLT
+		if ((this.lock == WLC)||(this.lock == RLT_WLC)) {
 			this.lock = WLT;
 		}
 		else {
-			// ici il faut appeler lock_write du client, pour que celui ci demande le lock_read au serveur et obtienne si necessaire une nouvelle copie			
+			try {
+				// ici il faut appeler lock_read du client, pour que celui ci demande le lock_read au serveur
+				Object obj = Client.lock_write(this.getId());
+				this.o = obj;
+				this.lock = WLT;
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+			
 		}
-
 	}
 
 	// invoked by the user program on the client node
