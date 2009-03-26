@@ -1,9 +1,21 @@
+import java.net.InetAddress;
 import java.rmi.*;
 import java.rmi.registry.*;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Hashtable;
 
 
-public class Server implements Server_itf {
+public class Server extends UnicastRemoteObject implements Server_itf {
+
+	protected Server() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2910013959992876711L;
 
 	private int compteurID=1;
 	
@@ -16,8 +28,9 @@ public class Server implements Server_itf {
 			// creation du serveur!
 			int port = Registry.REGISTRY_PORT;
 			LocateRegistry.createRegistry(port);
+			String URL = InetAddress.getLocalHost().getHostName();
 			Server server = new Server();
-			Naming.rebind("//localhost:"+port, server);
+			Naming.rebind("//"+URL+":/toto", server);
 		}
 		catch (Exception e){
 			e.printStackTrace();

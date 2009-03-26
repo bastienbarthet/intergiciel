@@ -1,3 +1,4 @@
+import java.net.InetAddress;
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.registry.*;
@@ -37,7 +38,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		try {
 			Client.instance = new Client();
 			// faire un lookup pr récup la ref du serveur
-			server = (Server) Naming.lookup("//localhost:"+Registry.REGISTRY_PORT);
+			String URL = InetAddress.getLocalHost().getHostName();
+			server = (Server) Naming.lookup("//"+URL+":/toto");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
