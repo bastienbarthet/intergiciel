@@ -19,13 +19,15 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	private int compteurID=1;
 	
-	private Hashtable<String, Integer> ListeNomsServerObject;
-	private Hashtable<Integer, ServerObject> ListeObjetsServerObject;
+	private static Hashtable<String, Integer> ListeNomsServerObject;
+	private static Hashtable<Integer, ServerObject> ListeObjetsServerObject;
 	
 	
 	public static void main(String[] args) {
 		try{
 			// creation du serveur!
+			ListeNomsServerObject = new Hashtable();
+			ListeObjetsServerObject = new Hashtable();
 			int port = Registry.REGISTRY_PORT;
 			LocateRegistry.createRegistry(port);
 			String URL = InetAddress.getLocalHost().getHostName();
