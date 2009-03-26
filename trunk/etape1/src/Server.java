@@ -20,15 +20,13 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	private int compteurID=1;
 	
-	private static Hashtable<String, Integer> ListeNomsServerObject;
-	private static Hashtable<Integer, ServerObject> ListeObjetsServerObject;
+	private  Hashtable<String, Integer> ListeNomsServerObject;
+	private  Hashtable<Integer, ServerObject> ListeObjetsServerObject;
 	
 	
 	public static void main(String[] args) {
 		try{
 			// creation du serveur!
-			ListeNomsServerObject = new Hashtable();
-			ListeObjetsServerObject = new Hashtable();
 			int port = Registry.REGISTRY_PORT;
 			LocateRegistry.createRegistry(port);
 			String URL = InetAddress.getLocalHost().getHostName();
@@ -53,7 +51,13 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	}
 
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
-		return this.ListeObjetsServerObject.get(id).lock_read(id, client);		
+		if (this.ListeObjetsServerObject.contains(id)) {
+			return this.ListeObjetsServerObject.get(id).lock_read(id, client);
+		}
+		else {
+			return null;
+		}
+				
 		}
 
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
