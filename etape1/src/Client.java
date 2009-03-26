@@ -22,7 +22,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	public static Client_itf instance = null; 
 	
-	private static Server server;
+	private static Server_itf server;
 	
 	public Client() throws RemoteException {
 		super();
@@ -39,7 +39,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			Client.instance = new Client();
 			// faire un lookup pr récup la ref du serveur
 			String URL = InetAddress.getLocalHost().getHostName();
-			server = (Server) Naming.lookup("//"+URL+":/toto");
+			server = (Server_itf) Naming.lookup("//"+URL+":/toto");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
