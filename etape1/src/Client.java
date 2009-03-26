@@ -37,6 +37,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static void init() {
 		try {
 			Client.instance = new Client();
+			listeObjets = new Hashtable();
 			// faire un lookup pr récup la ref du serveur
 			String URL = InetAddress.getLocalHost().getHostName();
 			server = (Server_itf) Naming.lookup("//"+URL+":/toto");
