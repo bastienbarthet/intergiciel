@@ -8,20 +8,20 @@ import java.util.List;
 
 public class Server extends UnicastRemoteObject implements Server_itf {
 
-	protected Server() throws RemoteException {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 2910013959992876711L;
 
 	private int compteurID=1;
 	
-	public  static Hashtable<String, Integer> ListeNomsServerObject;
-	public  static Hashtable<Integer, ServerObject> ListeObjetsServerObject;
+	public Hashtable<String, Integer> ListeNomsServerObject;
+	public Hashtable<Integer, ServerObject> ListeObjetsServerObject;
+	
+	
+	protected Server() throws RemoteException {
+		super();
+		ListeNomsServerObject = new Hashtable<String, Integer>();
+		ListeObjetsServerObject = new Hashtable<Integer, ServerObject>();
+	}
 	
 	
 	public static void main(String[] args) {
