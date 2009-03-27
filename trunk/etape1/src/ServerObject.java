@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -8,8 +9,8 @@ public class ServerObject implements Serializable{
 	private static final long serialVersionUID = -7396577889952667013L;
 	
 	// liste des clients
-	public List<Integer> listeDesLecteurs;
-	public List<Integer> getListe() {
+	public ArrayList<Integer> listeDesLecteurs;
+	public ArrayList<Integer> getListe() {
 		return this.listeDesLecteurs;
 	}
 	
@@ -36,7 +37,7 @@ public class ServerObject implements Serializable{
 	
 	// constructeur
 	public ServerObject (Object o){
-		this.listeDesLecteurs.clear();
+		this.listeDesLecteurs = new ArrayList<Integer>();
 		this.ecrivain = 0;
 		this.o = o;
 	}
@@ -57,7 +58,7 @@ public class ServerObject implements Serializable{
 
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
 		if (this.getEcrivain()!=0) {
-			// on invalide l'écrivain
+			// on invalide l'ï¿½crivain
 			client.invalidate_writer(this.getEcrivain() );
 		}
 		//  ON TE DONNE LE DROIT D'ECRITURE
