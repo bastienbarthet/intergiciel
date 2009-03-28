@@ -61,8 +61,13 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		}
 
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
-		return ListeObjetsServerObject.get(id).lock_write(id, client);
+		if (ListeObjetsServerObject.contains(id)) {
+			return ListeObjetsServerObject.get(id).lock_write(id, client);
 		}
+		else {
+			return null;
+		}
+	}
 
 	public int lookup(String name) throws RemoteException {
 		if (ListeNomsServerObject.containsKey(name)) {
