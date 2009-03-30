@@ -1,7 +1,6 @@
 import java.net.InetAddress;
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
-import java.rmi.registry.*;
 import java.util.*;
 
 public class Client extends UnicastRemoteObject implements Client_itf {
