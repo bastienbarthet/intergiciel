@@ -34,9 +34,10 @@ public class Irc extends Frame {
 		SharedObject s = Client.lookup("IRC");
 		if (s == null) {
 			s = Client.create(new Sentence());
+			System.out.println(((Sentence) s.getObject()).read());
 			Client.register("IRC", s);
 		}
-		else if (s.getObject()==null) System.out.println("ya rien");
+		//else if (s.getObject()==null) System.out.println("ya rien");
 		// create the graphical part
 		new Irc(s);
 	}
@@ -101,10 +102,12 @@ class writeListener implements ActionListener {
 		// get the value to be written from the buffer
         	String s = irc.data.getText();
         	
-        	// lock the object in write mode
+        // lock the object in write mode
+        if (irc.sentence.getObject()!=null) System.out.println("ya qqch");
 		irc.sentence.lock_write();
 		
 		// invoke the method
+		if (irc.sentence.getObject()==null) System.out.println("ya rien");
 		((Sentence)(irc.sentence.getObject())).write(Irc.myName+" wrote "+s);
 		irc.data.setText("");
 		
