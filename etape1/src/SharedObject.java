@@ -54,7 +54,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// invoked by the user program on the client node
 	public void lock_read() {
 		// si RLC, direct RLT
-		if (this.lock == RLC) {
+		if ( (this.lock == RLC)||(this.lock == WLC)||(this.lock == RLT_WLC) ) {
 			this.lock = RLT;
 		}
 		else {
