@@ -97,50 +97,51 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			case RLT_WLC : this.lock = WLC; break;
 			default : break;
 		}
+		
+		notify();
 	}
 
 
 	// callback invoked remotely by the server
-	public synchronized Object reduce_lock() {
+	public synchronized Object reduce_lock() throws InterruptedException {
 		// permet au serveur de r�clamer le passage d'un verrou de l'�criture a la lecture
 		switch (this.lock) {
 			
-			case NL : break;
-			case RLC :  break;
 			case WLC : this.lock = RLC; break;
 			// probleme sur ces 2 ci dessous!! Il faut waiter que l'appli ai fini pour passer en lecteur...
 				// Solution pour WLT : le serveur sait si ce shared object �crit, et va pa lui dire merde
 				// Solution pour RLT : il faut waiter...
-			case RLT : this.lock = RLC; break;
-			case WLT : this.lock = WLC; break;
+			case WLT : wait(); this.lock = RLC; break;
 				// case RLT_WLC : il faut waiter aussi
-			case RLT_WLC : this.lock = WLC; break;
+			case RLT_WLC : wait(); this.lock = RLC; break;
 			default : break;
 		}
 	return null; // On est sencer renvoy� qq chose?? moi je crois pas..
 	}
 
 	// callback invoked remotely by the server
-	public synchronized void invalidate_reader() {
+	public synchronized void invalidate_reader() throws InterruptedException {
 		// 2 cas : RLT ou RLC
 		switch (this.lock) {
 		
 			//case RLT : il faut waiter
-			case RLT : break;
+			case RLT : wait(); this.lock = NL; break;
 			//cas RLC, on invalide
 			case RLC :  this.lock = NL; break;
-			case RLT_WLC : break; // il faut waiter...
+			case RLT_WLC : wait(); break; // il faut waiter...
 			case WLC :  this.lock = NL; break;
+			case WLT : wait(); this.lock = NL; break; 
 			// case WLT : pas possible, le serveur va pas invalider l'�crivain en cours
 			default : break;
 		}
 		
 	}
 
-	public synchronized Object invalidate_writer() {
+	public synchronized Object invalidate_writer() throws InterruptedException {
 		switch (this.lock) {
-			//Le serveur ne peut invalider que des WLC selon moi..
+			
 			case WLC :  this.lock = NL; break;
+			case WLT :  wait(); this.lock = NL; break;
 			default : break;
 		}
 		return null;
