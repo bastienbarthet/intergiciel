@@ -50,7 +50,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	}
 
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
-		if (ListeObjetsServerObject.contains(id)) {
+		if (ListeObjetsServerObject.containsKey(id)) {
 			return ListeObjetsServerObject.get(id).lock_read(id, client);
 		}
 		else {
