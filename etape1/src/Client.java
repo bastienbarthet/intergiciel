@@ -50,6 +50,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static SharedObject lookup(String name) throws RemoteException {
 		// si on l'a, on le renvoi, sinon on le demande au serveur
 		int id =  server.lookup(name);	
+		System.out.println(id);
 		if (id==0) {
 			return null;
 		}

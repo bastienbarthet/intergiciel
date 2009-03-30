@@ -34,9 +34,9 @@ public class Irc extends Frame {
 		SharedObject s = Client.lookup("IRC");
 		if (s == null) {
 			s = Client.create(new Sentence());
-			s.toString();
 			Client.register("IRC", s);
 		}
+		else if (s.getObject()==null) System.out.println("ya rien");
 		// create the graphical part
 		new Irc(s);
 	}
