@@ -89,7 +89,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// request a read lock from the server
 	public static Object lock_read(int id) throws RemoteException {
 		// demander au serveur si personne ecrit
-		//listeObjets.get(id).setLock(SharedObject.RTL);
 		return server.lock_read(id, instance);
 	}
 
