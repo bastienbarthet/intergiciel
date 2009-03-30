@@ -3,7 +3,6 @@ import java.rmi.*;
 import java.rmi.registry.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Hashtable;
-import java.util.List;
 
 
 public class Server extends UnicastRemoteObject implements Server_itf {
