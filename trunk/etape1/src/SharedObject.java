@@ -35,6 +35,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// objet sur lequel pointe le shared object
 	private Object o;
 	public Object getObject() {
+		this.o.toString();
 		return this.o;
 	}
 	
@@ -45,10 +46,10 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	}
 	
 	// constructeur
-	public SharedObject (int id, Object o){
+	public SharedObject (int id, Object _o){
 		this.id = id;
 		this.lock = NL;
-		this.o = o;
+		this.o = _o;
 	}
 	
 	// invoked by the user program on the client node
