@@ -73,6 +73,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 			return (ListeNomsServerObject.get(name));
 		}
 		else {
+			System.out.println("la");
 			return 0;
 		}	
 	}

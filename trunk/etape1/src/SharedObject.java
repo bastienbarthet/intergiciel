@@ -35,7 +35,6 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// objet sur lequel pointe le shared object
 	private Object o;
 	public Object getObject() {
-		this.o.toString();
 		return this.o;
 	}
 	
