@@ -4,7 +4,7 @@ public class Sentence implements java.io.Serializable {
 	
 	String 		data;
 	public Sentence() {
-		data = new String("");
+		data = new String("phrase");
 	}
 	
 	public void write(String text) {
