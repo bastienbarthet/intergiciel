@@ -8,6 +8,7 @@ public class ServerObject implements Serializable{
 	private static final long serialVersionUID = -7396577889952667013L;
 	
 	// liste des clients
+	
 	public ArrayList<Integer> listeDesLecteurs;
 	public ArrayList<Integer> getListe() {
 		return this.listeDesLecteurs;
