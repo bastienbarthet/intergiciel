@@ -117,12 +117,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		// et faire so.setLock(NL);
 		SharedObject obj = listeObjets.get(id);
 		
-		switch (obj.getLock()) {
-		case RLC : obj.setLock(NL); break;
-		// dans le cas ci dessous, il faut waiter..
-		case RLT : obj.setLock(NL); break;
-		default : obj.setLock(NL); break;
-	}
+		try {
+			obj.invalidate_reader();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 
@@ -131,13 +131,14 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
 		SharedObject obj = listeObjets.get(id);
 		
-		switch (obj.getLock()) {
-		case WLC : obj.setLock(NL); break;
-		// dans le cas ci dessous, il faut waiter..
-		case WLT : obj.setLock(NL); break;
-		default : obj.setLock(NL); break;
-	}
-		return null;
+		
+		try {
+		obj.invalidate_writer();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	
+		return obj.getObject();
 		
 	}
 }

@@ -64,7 +64,7 @@ public class ServerObject implements Serializable{
 			this.setEcrivain(id);
 		// et on invalide tout les lecteurs
 			
-			for (int i=1 ; i<=( this.getListe().size() ) ; i++) {
+			for (int i=0 ; i<( this.getListe().size() ) ; i++) {
 				client.invalidate_reader(this.getListe().get(i));
 				}
 			this.getListe().clear();
