@@ -17,7 +17,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	// attribut liste de type hasmap pour avoir l'ensemble des Shared Objects
 	// <id, sharedobject>
-	private static Hashtable<Integer, SharedObject> listeObjets;
+	public static Hashtable<Integer, SharedObject> listeObjets;
 	
 	public static Client_itf instance = null; 
 	
@@ -99,15 +99,18 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a lock reduction request from the server
 	public Object reduce_lock(int id) throws java.rmi.RemoteException {
+		
 		SharedObject obj = listeObjets.get(id);
-		switch (obj.getLock()) {
-		case WLC : obj.setLock(RLC); break;
-		// dans les 2 cas ci dessous, il faut waiter..
-		case WLT : obj.setLock(RLC); break;
-		case RLT_WLC : obj.setLock(RLC); break;
-		default : break;
-	}
-		return null;
+		Object ob=null;
+		try {
+			if (obj!=null) ob = obj.reduce_lock();
+		} catch (InterruptedException e) {
+
+			e.printStackTrace();
+		}
+		
+		return ob;
+	
 	}
 
 
@@ -117,10 +120,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		// et faire so.setLock(NL);
 		SharedObject obj = listeObjets.get(id);
 		
+		if (obj!=null) {
 		try {
 			obj.invalidate_reader();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
 		}
 		
 	}
@@ -131,7 +136,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
 		SharedObject obj = listeObjets.get(id);
 		
-		
+		if (obj==null) return null;
+		else  {
 		try {
 		obj.invalidate_writer();
 		} catch (InterruptedException e) {
@@ -139,6 +145,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		}
 	
 		return obj.getObject();
-		
+		}
 	}
 }

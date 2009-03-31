@@ -8,7 +8,6 @@ public class ServerObject implements Serializable{
 	private static final long serialVersionUID = -7396577889952667013L;
 	
 	// liste des clients
-	
 	public ArrayList<Integer> listeDesLecteurs;
 	public ArrayList<Integer> getListe() {
 		return this.listeDesLecteurs;
@@ -43,23 +42,27 @@ public class ServerObject implements Serializable{
 	}
 	
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
-		// on rajoute a l'objet que ya qn en train de lire dessus
+
 		if (this.getEcrivain()!=0) {
-			// IF ECRIVAIN, VA TE FAIRE FOUTRE
-			return null;
+			// on invalide l'�crivain
+			this.o = client.reduce_lock(this.getEcrivain() );
+			this.setEcrivain(0);
 		}
-		else {
-		// SINON ON TE DONNE LE DROIT DE LECTURE
+
+		// ON TE DONNE LE DROIT DE LECTURE
 		this.getListe().add(id);
+		
 		// va renvoyer un truc de ce genre
+		System.out.println("fin de lock_read : " +this.getEcrivain());
 		return this.getObject();
-		}
+		
 	}
 
+	
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
 		if (this.getEcrivain()!=0) {
 			// on invalide l'�crivain
-			client.invalidate_writer(this.getEcrivain() );
+			this.o = client.invalidate_writer(this.getEcrivain() );
 		}
 		//  ON TE DONNE LE DROIT D'ECRITURE
 			this.setEcrivain(id);
@@ -69,8 +72,9 @@ public class ServerObject implements Serializable{
 				client.invalidate_reader(this.getListe().get(i));
 				}
 			this.getListe().clear();
-
+			
 		// va renvoyer un truc de ce genre
+			System.out.println("fin de lock_write : " +this.getEcrivain());
 		return this.getObject();
 	}
 	

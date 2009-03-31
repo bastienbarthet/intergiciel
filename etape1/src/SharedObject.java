@@ -54,8 +54,11 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// invoked by the user program on the client node
 	public void lock_read() {
 		// si RLC, direct RLT
-		if ( (this.lock == RLC)||(this.lock == WLC)||(this.lock == RLT_WLC) ) {
+		if ( (this.lock == RLC)) {
 			this.lock = RLT;
+		}
+		else if (this.lock == WLC) {
+			this.lock = RLT_WLC; 
 		}
 		else {
 			try {
@@ -67,7 +70,9 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			}
 			this.lock = RLT;
 		}
-
+		
+		System.out.println( "fin du lock_read : " +this.lock);
+		
 	}
 
 	// invoked by the user program on the client node
@@ -87,6 +92,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			}
 			
 		}
+		System.out.println( "fin du lock_write : " +this.lock);
 	}
 
 	// invoked by the user program on the client node
@@ -99,6 +105,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		}
 		
 		notify();
+		System.out.println( "fin du unlock : " +this.lock);
 	}
 
 
@@ -116,9 +123,11 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			case RLT_WLC : wait(); this.lock = RLC; break;
 			default : break;
 		}
-	return null; // On est sencer renvoy� qq chose?? moi je crois pas..
+		System.out.println( "fin du reduce_lock : " +this.lock);
+		return this.getObject(); // On est sencer renvoy� qq chose?? moi je crois pas..
 	}
 
+	
 	// callback invoked remotely by the server
 	public synchronized void invalidate_reader() throws InterruptedException {
 		// 2 cas : RLT ou RLC
@@ -128,12 +137,14 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			case RLT : wait(); this.lock = NL; break;
 			//cas RLC, on invalide
 			case RLC :  this.lock = NL; break;
-			case RLT_WLC : wait(); break; // il faut waiter...
+			case RLT_WLC : wait(); this.lock = NL; break;
 			case WLC :  this.lock = NL; break;
 			case WLT : wait(); this.lock = NL; break; 
 			// case WLT : pas possible, le serveur va pas invalider l'�crivain en cours
 			default : break;
 		}
+		
+		System.out.println( "fin du invalidate_reader : " +this.lock);
 		
 	}
 
@@ -142,9 +153,13 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			
 			case WLC :  this.lock = NL; break;
 			case WLT :  wait(); this.lock = NL; break;
+			case RLT_WLC : wait(); this.lock = NL; break;
 			default : break;
 		}
+		System.out.println( "fin du invalidate_writer : " +this.lock);
 		return this.getObject();
+		
+		
 	}
 	
 }
