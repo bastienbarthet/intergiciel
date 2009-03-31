@@ -144,7 +144,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			case WLT :  wait(); this.lock = NL; break;
 			default : break;
 		}
-		return null;
+		return this.getObject();
 	}
 	
 }
