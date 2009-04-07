@@ -46,7 +46,6 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		// on le rajoute dans la listes des objet
 		ListeObjetsServerObject.put(compteurID, so);
 		return compteurID++;
-
 	}
 
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
@@ -55,9 +54,8 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		}
 		else {
 			return null;
-		}
-				
-		}
+		}		
+	}
 
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
 		if (ListeObjetsServerObject.containsKey(id)) {
