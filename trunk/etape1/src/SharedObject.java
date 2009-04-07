@@ -130,7 +130,6 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public synchronized void invalidate_reader() throws InterruptedException {
 		// 2 cas : RLT ou RLC
 		switch (this.lock) {
-		
 			//case RLT : il faut waiter
 			case RLT : wait(); this.lock = NL; break;
 			//cas RLC, on invalide
