@@ -15,7 +15,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	
 	
-	// attribut liste de type hasmap pour avoir l'ensemble des Shared Objects
+	// attribut liste de type hashmap pour avoir l'ensemble des Shared Objects
 	// <id, sharedobject>
 	public static Hashtable<Integer, SharedObject> listeObjets;
 	
@@ -98,8 +98,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}
 
 	// receive a lock reduction request from the server
-	public Object reduce_lock(int id) throws java.rmi.RemoteException {
-		
+	public Object reduce_lock(int id) throws java.rmi.RemoteException{
 		SharedObject obj = listeObjets.get(id);
 		Object ob=null;
 		try {
@@ -108,9 +107,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 			e.printStackTrace();
 		}
-		
 		return ob;
-	
+		//return listeObjets.get(id).reduce_lock();
 	}
 
 
@@ -119,7 +117,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		// il faut retrouver ds la hashtalbe le shared object qui a le num "id"
 		// et faire so.setLock(NL);
 		SharedObject obj = listeObjets.get(id);
-		
 		if (obj!=null) {
 		try {
 			obj.invalidate_reader();

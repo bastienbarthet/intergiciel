@@ -44,7 +44,7 @@ public class ServerObject implements Serializable{
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
 
 		if (this.getEcrivain()!=0) {
-			// on invalide l'�crivain
+			// on invalide l'ecrivain
 			this.o = client.reduce_lock(this.getEcrivain() );
 			this.setEcrivain(0);
 		}
@@ -61,7 +61,7 @@ public class ServerObject implements Serializable{
 	
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
 		if (this.getEcrivain()!=0) {
-			// on invalide l'�crivain
+			// on invalide l'ecrivain
 			this.o = client.invalidate_writer(this.getEcrivain() );
 		}
 		//  ON TE DONNE LE DROIT D'ECRITURE
