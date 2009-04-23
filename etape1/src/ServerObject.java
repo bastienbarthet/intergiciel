@@ -14,6 +14,7 @@ public class ServerObject implements Serializable{
 		return this.listeDesLecteurs;
 	}
 	
+	private Client_itf client_ecrivain;
 	// mode de verouillage du server object
 	private int ecrivain;
 	public int getEcrivain() {
@@ -44,16 +45,17 @@ public class ServerObject implements Serializable{
 	
 	public synchronized Object lock_read(int id, Client_itf client) throws RemoteException {
 
+		// ON TE DONNE LE DROIT DE LECTURE
+		this.getListe().add(id);
+		
 		if (this.getEcrivain()!=0) {
 			// on invalide l'ecrivain
-			this.o = client.reduce_lock(this.getEcrivain() );
+			this.o = client_ecrivain.reduce_lock(this.getEcrivain() );
 			this.listeDesLecteurs.add(this.getEcrivain());
-			this.listeDesLecteurs.add(id);
 			this.setEcrivain(0);
 		}
 
-		// ON TE DONNE LE DROIT DE LECTURE
-		this.getListe().add(id);
+		
 		
 		// va renvoyer un truc de ce genre
 		System.out.println("fin de lock_read : " +this.getEcrivain());
@@ -77,7 +79,7 @@ public class ServerObject implements Serializable{
 		
 		if (this.getEcrivain()!=0) {
 			// on invalide l'ecrivain
-			this.o = client.invalidate_writer(this.getEcrivain() );
+			this.o = client_ecrivain.invalidate_writer(this.getEcrivain() );
 		}
 		
 		//  ON TE DONNE LE DROIT D'ECRITURE

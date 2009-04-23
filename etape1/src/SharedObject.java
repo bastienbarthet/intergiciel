@@ -53,19 +53,19 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	
 	// invoked by the user program on the client node
 	public void lock_read() {
-		
 		synchronized (this) {
 			switch (this.lock) {
-			
 			// si RLC, direct RLT
 			case RLC :	this.lock = RLT; break; 
 			case WLC : 	this.lock = RLT_WLC; break;
 			case NL : try {
 						this.o = Client.lock_read(this.getId());
+						this.lock=RLT;
 					} catch (RemoteException e) {
 						e.printStackTrace();
 					}
-			default : System.err.println("cas pas possible de verrou ds lock_read"); this.lock=RLT; break;
+					break;
+			default : System.err.println("cas pas possible de verrou ds lock_read"); break;
 			}
 		}
 		System.out.println( "fin du lock_read : " +this.lock);
@@ -104,12 +104,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// callback invoked remotely by the server
 	public synchronized Object reduce_lock() throws InterruptedException {
 		// permet au serveur de réclamer le passage d'un verrou de l'écriture a la lecture
-		
+		System.out.println("c : " + this.lock);
 		while(this.lock!=RLT_WLC && this.lock!=WLC) {
 			try {
 				wait();
+				System.out.println("c2 : " + this.lock);
 			} catch (InterruptedException e) {}
 		}
+		
+		System.out.println("c3 : " + this.lock);
 		
 		switch (this.lock) {
 			
@@ -124,15 +127,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	
 	// callback invoked remotely by the server
 	public synchronized void invalidate_reader() throws InterruptedException {
-		while(this.lock!=RLC && this.lock!=WLT && this.lock!=WLC){
+		while(this.lock!=RLC && this.lock!=WLT){
 			try {
+				System.out.println("e");
 				wait();
 			} catch (InterruptedException e) {}
 		}
 		
 		switch (this.lock) {
 			case RLC :  this.lock = NL; break;
-			case WLC :  this.lock = NL; break;
 			default : break;
 		}
 		System.out.println( "fin du invalidate_reader : " +this.lock);
