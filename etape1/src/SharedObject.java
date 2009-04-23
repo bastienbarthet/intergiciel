@@ -109,21 +109,15 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	// callback invoked remotely by the server
 	public synchronized Object reduce_lock() throws InterruptedException {
 		// permet au serveur de réclamer le passage d'un verrou de l'écriture a la lecture
-		System.out.println("c : " + this.lock);
-		
 		while(this.lock!=RLT_WLC && this.lock!=WLC) {
 			try {
 				wait();
-				System.out.println("c2 : " + this.lock);
 			} catch (InterruptedException e) {}
 		}
 		
-		System.out.println("c3 : " + this.lock);
-		
 		switch (this.lock) {
-			
 			case WLC : this.lock = RLC; break;
-			case RLT_WLC : wait(); this.lock = RLT; break;
+			case RLT_WLC : this.lock = RLT; break;
 			default : break;
 		}
 		System.out.println( "fin du reduce_lock : " +this.lock);
@@ -133,7 +127,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	
 	// callback invoked remotely by the server
 	public synchronized void invalidate_reader() throws InterruptedException {
-		while(this.lock!=RLC && this.lock!=WLT){
+		while(this.lock!=WLT && this.lock!=RLC){
 			try {
 				System.out.println("e");
 				wait();

@@ -20,7 +20,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// <id, sharedobject>
 	public static Hashtable<Integer, SharedObject> listeObjets;
 	
-	public static Client instance = null; 
+	public static Client instance; 
 	
 	private static Server_itf server;
 	
@@ -37,12 +37,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static void init() {
 		if (init) return;
 		try {
-			instance = new Client();
-			listeObjets = new Hashtable();
+			listeObjets = new Hashtable<Integer, SharedObject>();
 			// faire un lookup pr récup la ref du serveur
 			String URL = InetAddress.getLocalHost().getHostName();
 			server = (Server_itf) Naming.lookup("//"+URL+":/toto");
 			init=true;
+			instance = new Client();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -124,6 +124,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		if (obj!=null) {
 			try {
 				obj.invalidate_reader();
+				System.out.println("reader invalide");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
