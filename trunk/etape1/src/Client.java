@@ -6,6 +6,7 @@ import java.util.*;
 public class Client extends UnicastRemoteObject implements Client_itf {
 
 	private static final long serialVersionUID = -6547940558906997763L;
+	
 	public static final int NL = 0;				// no local read
 	public static final int RLC = 1;			// real lock caches (not taken)
 	public static final int WLC = 2;			// write lock cached
@@ -57,6 +58,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		else {
 			Object o = lock_read(id);
 			SharedObject so = new SharedObject(id, o);
+			listeObjets.put(id, so);
 			so.unlock();
 			return so;
 		}

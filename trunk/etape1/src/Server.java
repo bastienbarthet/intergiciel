@@ -42,10 +42,12 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	
 	public int create(Object o) throws RemoteException {
 		// on cree un serverobject, on genere un id, on le renvoi o client
+		synchronized(this){
 		ServerObject so = new ServerObject(o);
 		// on le rajoute dans la listes des objet
 		ListeObjetsServerObject.put(compteurID, so);
 		return compteurID++;
+		}
 	}
 
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
