@@ -41,11 +41,12 @@ public class ServerObject implements Serializable{
 		this.o = o;
 	}
 	
-	public Object lock_read(int id, Client_itf client) throws RemoteException {
+	public synchronized Object lock_read(int id, Client_itf client) throws RemoteException {
 
 		if (this.getEcrivain()!=0) {
 			// on invalide l'ecrivain
 			this.o = client.reduce_lock(this.getEcrivain() );
+			this.listeDesLecteurs.add(id);
 			this.setEcrivain(0);
 		}
 
@@ -58,19 +59,22 @@ public class ServerObject implements Serializable{
 		
 	}
 	
-	public Object lock_write(int id, Client_itf client) throws RemoteException {
+	public synchronized Object lock_write(int id, Client_itf client) throws RemoteException {
+		System.out.println("taille liste lecteur" + this.getListe().size());
+		for (int i=0 ; i<( this.getListe().size() ) ; i++) {
+				client.invalidate_reader(this.getListe().get(i));
+		}
+		
+		this.getListe().clear();
+		
 		if (this.getEcrivain()!=0) {
 			// on invalide l'ecrivain
 			this.o = client.invalidate_writer(this.getEcrivain() );
 		}
+		
 		//  ON TE DONNE LE DROIT D'ECRITURE
 		this.setEcrivain(id);
 		// et on invalide tout les lecteurs
-			
-		for (int i=0 ; i<( this.getListe().size() ) ; i++) {
-			client.invalidate_reader(this.getListe().get(i));
-			}
-		this.getListe().clear();
 			
 		// va renvoyer un truc de ce genre
 		System.out.println("fin de lock_write : " +this.getEcrivain());

@@ -23,13 +23,13 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	}
 
 	// variable de nom du shared object
-	private String name;
-	public String getName() {
-		return this.name;
-	}
-	public void setName(String newName) {
-		this.name = newName;
-	}
+//	private String name;
+//	public String getName() {
+//		return this.name;
+//	}
+//	public void setName(String newName) {
+//		this.name = newName;
+//	}
 	
 	
 	// objet sur lequel pointe le shared object
@@ -53,42 +53,37 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	
 	// invoked by the user program on the client node
 	public void lock_read() {
-		// si RLC, direct RLT
-		if ( (this.lock == RLC)) {
-			this.lock = RLT;
-		}
-		else if (this.lock == WLC) {
-			this.lock = RLT_WLC; 
-		}
-		else {
-			try {
-				// ici il faut appeler lock_read du client, pour que celui ci demande le lock_read au serveur
-				Object obj = Client.lock_read(this.getId());
-				this.o = obj;
-			} catch (RemoteException e) {
-				e.printStackTrace();
+		
+		synchronized (this) {
+			switch (this.lock) {
+			
+			// si RLC, direct RLT
+			case RLC :	this.lock = RLT; break; 
+			case WLC : 	this.lock = RLT_WLC; break;
+			case NL : try {
+						this.o = Client.lock_read(this.getId());
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+			default : System.err.println("cas pas possible de verrou ds lock_read"); this.lock=RLT; break;
 			}
-			this.lock = RLT;
 		}
 		System.out.println( "fin du lock_read : " +this.lock);
 	}
 
 	// invoked by the user program on the client node
 	public void lock_write() {
-		// si WLC, direct WLT
-		if ((this.lock == WLC)||(this.lock == RLT_WLC)) {
-			this.lock = WLT;
-		}
-		else {
-			try {
-				// ici il faut appeler lock_read du client, pour que celui ci demande le lock_read au serveur
-				Object obj = Client.lock_write(this.getId());
-				this.o = obj;
-				this.lock = WLT;
-			} catch (RemoteException e) {
-				e.printStackTrace();
+		
+		synchronized (this) {
+			switch (this.lock) {
+			case WLC : this.lock = WLT; break;
+			default : try {
+						this.o = Client.lock_write(this.getId());
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} this.lock = WLT; break;
 			}
-			
 		}
 		System.out.println( "fin du lock_write : " +this.lock);
 	}
@@ -108,19 +103,20 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
 	// callback invoked remotely by the server
 	public synchronized Object reduce_lock() throws InterruptedException {
-		// permet au serveur de réclamer le passage d'un verrou de l'écriture a la lecture
+		// permet au serveur de rÃ©clamer le passage d'un verrou de l'Ã©criture a la lecture
+		
+		while(this.lock!=RLT_WLC && this.lock!=WLC) {
+			try {
+				wait();
+			} catch (InterruptedException e) {}
+		}
+		
 		switch (this.lock) {
 			
 			case WLC : this.lock = RLC; break;
-			// probleme sur ces 2 ci dessous!! Il faut waiter que l'appli ai fini pour passer en lecteur...
-				// Solution pour WLT : le serveur sait si ce shared object écrit, et va pa lui dire merde
-				// Solution pour RLT : il faut waiter...
-			case WLT : wait(); this.lock = RLC; break;
-				// case RLT_WLC : il faut waiter aussi
-			case RLT_WLC : wait(); this.lock = RLC; break;
+			case RLT_WLC : wait(); this.lock = RLT; break;
 			default : break;
 		}
-		notify();
 		System.out.println( "fin du reduce_lock : " +this.lock);
 		return this.getObject();
 	}
@@ -128,30 +124,30 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	
 	// callback invoked remotely by the server
 	public synchronized void invalidate_reader() throws InterruptedException {
-		// 2 cas : RLT ou RLC
+		while(this.lock!=RLC && this.lock!=WLT && this.lock!=WLC){
+			try {
+				wait();
+			} catch (InterruptedException e) {}
+		}
+		
 		switch (this.lock) {
-			//case RLT : il faut waiter
-			case RLT : wait(); this.lock = NL; break;
-			//cas RLC, on invalide
 			case RLC :  this.lock = NL; break;
-			case RLT_WLC : wait(); this.lock = NL; break;
 			case WLC :  this.lock = NL; break;
-			case WLT : wait(); this.lock = NL; break; 
-			// case WLT : pas possible, le serveur va pas invalider l'ecrivain en cours
 			default : break;
 		}
-		notify();
 		System.out.println( "fin du invalidate_reader : " +this.lock);
 	}
 
 	public synchronized Object invalidate_writer() throws InterruptedException {
-		switch (this.lock) {
-			case WLC :  this.lock = NL; break;
-			case WLT :  wait(); this.lock = NL; break;
-			case RLT_WLC : wait(); this.lock = NL; break;
-			default : break;
+
+		while(this.lock!=WLC) {
+			try {
+				wait();
+			} catch (InterruptedException e) {}
 		}
-		notify();
+		
+		this.lock = NL;
+		
 		System.out.println( "fin du invalidate_writer : " +this.lock);
 		return this.getObject();	
 	}
