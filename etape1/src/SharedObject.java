@@ -73,12 +73,12 @@ public class SharedObject implements Serializable, SharedObject_itf {
 
 	// invoked by the user program on the client node
 	public void lock_write() {
-		
+
 		synchronized (this) {
 			switch (this.lock) {
 			case WLC : this.lock = WLT; break;
 			default : try {
-						this.o = Client.lock_write(this.getId());
+					this.o = Client.lock_write(this.getId());
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
