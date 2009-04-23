@@ -14,13 +14,13 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static final int WLT = 4;			// write lock taken
 	public static final int RLT_WLC = 5;		// read lock taken and write lock cached
 	
-	
+	private static boolean init = false ;
 	
 	// attribut liste de type hashmap pour avoir l'ensemble des Shared Objects
 	// <id, sharedobject>
 	public static Hashtable<Integer, SharedObject> listeObjets;
 	
-	public static Client_itf instance = null; 
+	public static Client instance = null; 
 	
 	private static Server_itf server;
 	
@@ -35,12 +35,14 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// initialization of the client layer
 	public static void init() {
+		if (init) return;
 		try {
-			Client.instance = new Client();
+			instance = new Client();
 			listeObjets = new Hashtable();
 			// faire un lookup pr récup la ref du serveur
 			String URL = InetAddress.getLocalHost().getHostName();
 			server = (Server_itf) Naming.lookup("//"+URL+":/toto");
+			init=true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -56,10 +58,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			return null;
 		}
 		else {
-			Object o = lock_read(id);
-			SharedObject so = new SharedObject(id, o);
+			//Object o = lock_read(id);
+			SharedObject so = new SharedObject(id, null);
 			listeObjets.put(id, so);
-			so.unlock();
+			//so.unlock();
 			return so;
 		}
 	}		
