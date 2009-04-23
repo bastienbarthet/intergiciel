@@ -12,14 +12,14 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	private int compteurID=1;
 	
-	public Hashtable<String, Integer> ListeNomsServerObject;
-	public Hashtable<Integer, ServerObject> ListeObjetsServerObject;
+	public Hashtable<String, ServerObject> ListeNomsServerObject;
+	public Hashtable<Integer, ServerObject> ListeIDServerObject;
 	
 	
 	protected Server() throws RemoteException {
 		super();
-		ListeNomsServerObject = new Hashtable<String, Integer>();
-		ListeObjetsServerObject = new Hashtable<Integer, ServerObject>();
+		ListeNomsServerObject = new Hashtable<String, ServerObject>();
+		ListeIDServerObject = new Hashtable<Integer, ServerObject>();
 	}
 	
 	
@@ -43,16 +43,18 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	public int create(Object o) throws RemoteException {
 		// on cree un serverobject, on genere un id, on le renvoi o client
 		synchronized(this){
-		ServerObject so = new ServerObject(o);
+		ServerObject so = new ServerObject(compteurID, o);
 		// on le rajoute dans la listes des objet
-		ListeObjetsServerObject.put(compteurID, so);
-		return compteurID++;
+		ListeIDServerObject.put(compteurID, so);
+		compteurID++;
+		return so.getID();
 		}
 	}
 
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
-		if (ListeObjetsServerObject.containsKey(id)) {
-			return ListeObjetsServerObject.get(id).lock_read(id, client);
+		System.out.println(ListeIDServerObject.get(id).getID());
+		if (ListeIDServerObject.containsKey(id)) {
+			return ListeIDServerObject.get(id).lock_read(client);
 		}
 		else {
 			return null;
@@ -60,8 +62,8 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	}
 
 	public Object lock_write(int id, Client_itf client) throws RemoteException {
-		if (ListeObjetsServerObject.containsKey(id)) {
-			return ListeObjetsServerObject.get(id).lock_write(id, client);
+		if (ListeIDServerObject.containsKey(id)) {
+			return ListeIDServerObject.get(id).lock_write(client);
 		}
 		else {
 			return null;
@@ -70,7 +72,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	public int lookup(String name) throws RemoteException {
 		if (ListeNomsServerObject.containsKey(name)) {
-			return (ListeNomsServerObject.get(name));
+			return (ListeNomsServerObject.get(name).getID());
 		}
 		else {
 			return 0;
@@ -79,7 +81,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 
 	public void register(String name, int id) throws RemoteException {
 		// on inscrit un nom ds la liste des noms d'objets
-		ListeNomsServerObject.put(name, id);
+		ListeNomsServerObject.put(name, ListeIDServerObject.get(id));
 	}
 
 }

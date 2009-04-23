@@ -14,7 +14,14 @@ public class ServerObject implements Serializable{
 		return this.listeDesLecteurs;
 	}
 	
-	public int ID;
+	private int ID;
+	public void setID(int nouvelID) {
+		this.ID = nouvelID;
+	}
+	public int getID() {
+		return this.ID;
+	}
+	
 	private Client_itf client_ecrivain;
 	
 	// objet sur lequel pointe le server object
@@ -30,13 +37,14 @@ public class ServerObject implements Serializable{
 	}
 	
 	// constructeur
-	public ServerObject (Object o){
+	public ServerObject (int id, Object o){
+		this.ID = id;
 		this.listeDesLecteurs = new ArrayList<Client_itf>();
 		this.client_ecrivain = null;
 		this.o = o;
 	}
 	
-	public synchronized Object lock_read(int id, Client_itf client) throws RemoteException {
+	public synchronized Object lock_read(Client_itf client) throws RemoteException {
 
 		// ON TE DONNE LE DROIT DE LECTURE
 		this.listeDesLecteurs.add(client);
@@ -56,9 +64,10 @@ public class ServerObject implements Serializable{
 		
 	}
 	
-	public synchronized Object lock_write(int id, Client_itf client) throws RemoteException {
+	public synchronized Object lock_write(Client_itf client) throws RemoteException {
 		
 		System.out.println("taille liste lecteur" + this.listeDesLecteurs.size());
+		this.listeDesLecteurs.remove(client);
 		
 		Iterator<Client_itf> it = this.listeDesLecteurs.iterator() ;
 		while ( it.hasNext() ) {
