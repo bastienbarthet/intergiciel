@@ -105,6 +105,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public synchronized Object reduce_lock() throws InterruptedException {
 		// permet au serveur de réclamer le passage d'un verrou de l'écriture a la lecture
 		System.out.println("c : " + this.lock);
+		
 		while(this.lock!=RLT_WLC && this.lock!=WLC) {
 			try {
 				wait();

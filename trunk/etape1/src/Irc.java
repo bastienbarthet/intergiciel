@@ -76,12 +76,13 @@ class readListener implements ActionListener {
 		irc = i;
 	}
 	public void actionPerformed (ActionEvent e) {
-		
+
 		// lock the object in read mode
 		irc.sentence.lock_read();
 		
 		// invoke the method
 		String s = ((Sentence)(irc.sentence.getObject())).read();
+		
 		
 		// unlock the object
 		irc.sentence.unlock();
