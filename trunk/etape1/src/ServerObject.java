@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class ServerObject implements Serializable{
@@ -46,6 +47,7 @@ public class ServerObject implements Serializable{
 		if (this.getEcrivain()!=0) {
 			// on invalide l'ecrivain
 			this.o = client.reduce_lock(this.getEcrivain() );
+			this.listeDesLecteurs.add(this.getEcrivain());
 			this.listeDesLecteurs.add(id);
 			this.setEcrivain(0);
 		}
@@ -61,11 +63,17 @@ public class ServerObject implements Serializable{
 	
 	public synchronized Object lock_write(int id, Client_itf client) throws RemoteException {
 		System.out.println("taille liste lecteur" + this.getListe().size());
-		for (int i=0 ; i<( this.getListe().size() ) ; i++) {
-				client.invalidate_reader(this.getListe().get(i));
-		}
 		
-		this.getListe().clear();
+		Iterator<Integer> it = this.listeDesLecteurs.iterator() ;
+		while ( it.hasNext() ) {
+			client.invalidate_reader(it.next());
+		}
+				//for (int i=0 ; i<( this.getListe().size() ) ; i++) {
+		//		client.invalidate_reader(this.getListe().get(i));
+		//}
+		
+		
+		this.listeDesLecteurs.clear();
 		
 		if (this.getEcrivain()!=0) {
 			// on invalide l'ecrivain
