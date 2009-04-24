@@ -33,10 +33,10 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	
 	
 	// objet sur lequel pointe le shared object
-	private Object o;
-	public Object getObject() {
-		return this.o;
-	}
+	public Object o;
+	//public Object getObject() {
+	//	return this.o;
+	//}
 	
 	// identifiant de l'objet
 	private int id;
@@ -121,7 +121,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			default : break;
 		}
 		System.out.println( "fin du reduce_lock : " +this.lock);
-		return this.getObject();
+		return this.o;
 	}
 
 	
@@ -151,7 +151,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		this.lock = NL;
 		
 		System.out.println( "fin du invalidate_writer : " +this.lock);
-		return this.getObject();	
+		return this.o;	
 	}
 	
 }

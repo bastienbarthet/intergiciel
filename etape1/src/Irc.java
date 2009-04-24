@@ -34,7 +34,7 @@ public class Irc extends Frame {
 		SharedObject s = Client.lookup("IRC");
 		if (s == null) {
 			s = Client.create(new Sentence());
-			System.out.println(((Sentence) s.getObject()).read());
+			System.out.println(((Sentence) s.o).read());
 			Client.register("IRC", s);
 		}
 		// create the graphical part
@@ -81,7 +81,7 @@ class readListener implements ActionListener {
 		irc.sentence.lock_read();
 		
 		// invoke the method
-		String s = ((Sentence)(irc.sentence.getObject())).read();
+		String s = ((Sentence)(irc.sentence.o)).read();
 		
 		
 		// unlock the object
@@ -106,7 +106,7 @@ class writeListener implements ActionListener {
 		irc.sentence.lock_write();
 		
 		// invoke the method
-		((Sentence)(irc.sentence.getObject())).write(Irc.myName+" wrote "+s);
+		((Sentence)(irc.sentence.o)).write(Irc.myName+" wrote "+s);
 		irc.data.setText("");
 		
 		// unlock the object

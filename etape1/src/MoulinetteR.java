@@ -14,7 +14,7 @@ public class MoulinetteR {
 		while(true){
 			
 			truc.lock_read();
-			String txt = ((Sentence)truc.getObject()).read();
+			String txt = ((Sentence)truc.o).read();
 			truc.unlock();
 			
 			if(!txt.equals("")){
