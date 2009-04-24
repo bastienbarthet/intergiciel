@@ -46,8 +46,8 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 		ServerObject so = new ServerObject(compteurID, o);
 		// on le rajoute dans la listes des objet
 		ListeIDServerObject.put(compteurID, so);
-		compteurID++;
-		return so.getID();
+		//compteurID++;
+		return compteurID++;
 		}
 	}
 
