@@ -76,7 +76,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		boolean maj = false;
 		synchronized (this) {
 			switch (this.lock) {
-			case NL : 
+			case NL : maj = true; this.lock = WLT; break;
 			case RLC : maj = true; this.lock = WLT; break;
 			case WLC : this.lock = WLT; break;
 			default : break;

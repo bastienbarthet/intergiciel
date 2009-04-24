@@ -51,8 +51,8 @@ public class ServerObject implements Serializable{
 		
 		if (this.client_ecrivain!=null) {
 			// on invalide l'ecrivain
-			this.o = client_ecrivain.reduce_lock(this.ID );
-			this.listeDesLecteurs.add(client);
+			this.o = client_ecrivain.reduce_lock(this.ID);
+			this.listeDesLecteurs.add(client_ecrivain);
 			this.client_ecrivain=null;
 		}
 
