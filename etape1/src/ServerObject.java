@@ -69,13 +69,13 @@ public class ServerObject implements Serializable{
 		System.out.println("taille liste lecteur" + this.listeDesLecteurs.size());
 		this.listeDesLecteurs.remove(client);
 		
-		//Iterator<Client_itf> it = this.listeDesLecteurs.iterator() ;
-		//while ( it.hasNext() ) {
-		//	it.next().invalidate_reader(this.ID);
-		//}
-		for (int i=0 ; i<( this.listeDesLecteurs.size() ) ; i++) {
-			this.listeDesLecteurs.get(i).invalidate_reader(this.ID);
+		Iterator<Client_itf> it = this.listeDesLecteurs.iterator() ;
+		while ( it.hasNext() ) {
+			it.next().invalidate_reader(this.ID);
 		}
+		//for (int i=0 ; i<( this.listeDesLecteurs.size() ) ; i++) {
+		//	this.listeDesLecteurs.get(i).invalidate_reader(this.ID);
+		//}
 		
 		
 		this.listeDesLecteurs.clear();
