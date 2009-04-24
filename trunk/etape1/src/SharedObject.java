@@ -129,7 +129,6 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public synchronized void invalidate_reader() throws InterruptedException {
 		while(this.lock!=WLT && this.lock!=RLC){
 			try {
-				System.out.println("e");
 				wait();
 			} catch (InterruptedException e) {}
 		}
