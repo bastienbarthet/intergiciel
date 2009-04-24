@@ -33,7 +33,7 @@ public class Moulinette {
 				// We read
 				s.lock_read();
 				
-				System.out.println("Read :" + ((Sentence)(s.getObject())).read());
+				System.out.println("Read :" + ((Sentence)(s.o)).read());
 				
 				s.unlock();
 
@@ -43,8 +43,8 @@ public class Moulinette {
 				s.lock_write();
 
 				// invoke the method
-				((Sentence)(s.getObject())).write(name);
-				if(s.getObject() == null) System.out.println("ça va planter en write");
+				((Sentence)(s.o)).write(name);
+				if(s.o == null) System.out.println("ça va planter en write");
 
 				// unlock the object
 				s.unlock();

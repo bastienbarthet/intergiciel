@@ -14,7 +14,7 @@ public class MoulinetteW {
 		while(true){
 			truc.lock_write();
 			System.out.println("Ecriture n�"+instNum);
-			((Sentence)truc.getObject()).write("Ecriture n�"+instNum);
+			((Sentence)truc.o).write("Ecriture n�"+instNum);
 			instNum++;
 			truc.unlock();
 		}
