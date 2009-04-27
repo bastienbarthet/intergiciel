@@ -124,7 +124,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		if (obj!=null) {
 			try {
 				obj.invalidate_reader();
-				System.out.println("reader invalide");
+			//	System.out.println("reader invalide");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
