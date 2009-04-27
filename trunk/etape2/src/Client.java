@@ -1,3 +1,4 @@
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
@@ -18,7 +19,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	// attribut liste de type hashmap pour avoir l'ensemble des Shared Objects
 	// <id, sharedobject>
-	public static Hashtable<Integer, SharedObject> listeObjets;
+	public static Hashtable<Integer, Object> listeObjets;
 	
 	public static Client instance; 
 	
@@ -37,7 +38,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static void init() {
 		if (init) return;
 		try {
-			listeObjets = new Hashtable<Integer, SharedObject>();
+			listeObjets = new Hashtable<Integer, Object>();
 			// faire un lookup pr récup la ref du serveur
 			String URL = InetAddress.getLocalHost().getHostName();
 			server = (Server_itf) Naming.lookup("//"+URL+":/toto");
@@ -50,19 +51,48 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}
 	
 	// lookup in the name server
-	public static SharedObject lookup(String name) throws RemoteException {
+	public static Object lookup(String name) throws RemoteException {
 		// si on l'a, on le renvoi, sinon on le demande au serveur
+		Object obj_stub = null;
 		int id =  server.lookup(name);	
 		//System.out.println(id);
 		if (id==0) {
 			return null;
 		}
 		else {
-			//Object o = lock_read(id);
-			SharedObject so = new SharedObject(id, null);
-			listeObjets.put(id, so);
-			//so.unlock();
-			return so;
+			Object obj_local = lock_read(id);
+			try {
+				Class classe;
+				classe = Class.forName( obj_local.getClass().getName() + "_stub");
+				java.lang.reflect.Constructor constructeur = classe.getConstructor(new Class[] { int.class, Object.class });
+				//on renvoye l'objet cree
+				obj_stub = constructeur.newInstance(new Object[] { id, obj_local });	
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			listeObjets.put(id, obj_stub);
+			return obj_stub;
+
 		}
 	}		
 
@@ -78,12 +108,47 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}
 
 	// creation of a shared object
-	public static SharedObject create(Object o) throws RemoteException {
-		// creations du shared object a partir de l'id  renvoy� par le create du server
-		int id = server.create(o);
-		SharedObject so = new SharedObject(id, o);
-		listeObjets.put(id, so);
-		return so;
+	public static Object create(Object o) throws RemoteException {
+
+		Object obj_stub = null;
+		try {
+			Class classe;
+			int id = server.create(o);
+			classe = Class.forName(o.getClass().getName() + "_stub");
+			java.lang.reflect.Constructor constructeur = classe.getConstructor(new Class[] { int.class, Object.class });
+			//on renvoye l'objet cree
+			obj_stub = constructeur.newInstance(new Object[] { id, o });	
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		return obj_stub;
+		
+		// creations du shared object a partir de l'id  renvoye par le create du server
+		//int id = server.create(o);
+		//SharedObject so = new SharedObject(id, o);
+		//listeObjets.put(id, so);
+		//return so;
 	}
 	
 /////////////////////////////////////////////////////////////
