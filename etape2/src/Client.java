@@ -62,11 +62,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		else {
 			Object obj_local = lock_read(id);
 			try {
-				Class classe;
-				classe = Class.forName( obj_local.getClass().getName() + "_stub");
+				Class classe = Class.forName(obj_local.getClass().getName() + "_stub");
 				java.lang.reflect.Constructor constructeur = classe.getConstructor(new Class[] { int.class, Object.class });
 				//on renvoye l'objet cree
-				obj_stub = constructeur.newInstance(new Object[] { id, obj_local });	
+				obj_stub = constructeur.newInstance(new Object[] { id, null });
+				listeObjets.put(id, obj_stub);
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -168,7 +168,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a lock reduction request from the server
 	public Object reduce_lock(int id) throws java.rmi.RemoteException{
-		SharedObject obj = listeObjets.get(id);
+		SharedObject obj = (SharedObject) listeObjets.get(id);
 		Object ob=null;
 		try {
 			if (obj!=null) ob = obj.reduce_lock();
@@ -185,7 +185,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public void invalidate_reader(int id) throws java.rmi.RemoteException {
 		// il faut retrouver ds la hashtalbe le shared object qui a le num "id"
 		// et faire so.setLock(NL);
-		SharedObject obj = listeObjets.get(id);
+		SharedObject obj = (SharedObject) listeObjets.get(id);
 		if (obj!=null) {
 			try {
 				obj.invalidate_reader();
@@ -199,7 +199,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a writer invalidation request from the server
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
-		SharedObject obj = listeObjets.get(id);
+		SharedObject obj = (SharedObject) listeObjets.get(id);
 		if (obj==null) return null;
 		else {
 			try {
