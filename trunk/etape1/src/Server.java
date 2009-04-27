@@ -52,7 +52,7 @@ public class Server extends UnicastRemoteObject implements Server_itf {
 	}
 
 	public Object lock_read(int id, Client_itf client) throws RemoteException {
-		System.out.println(ListeIDServerObject.get(id).getID());
+		//System.out.println(ListeIDServerObject.get(id).getID());
 		if (ListeIDServerObject.containsKey(id)) {
 			return ListeIDServerObject.get(id).lock_read(client);
 		}
