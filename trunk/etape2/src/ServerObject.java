@@ -59,14 +59,14 @@ public class ServerObject implements Serializable{
 		
 		
 		// va renvoyer un truc de ce genre
-		System.out.println("fin de lock_read : " );
+		//System.out.println("fin de lock_read : " );
 		return this.getObject();
 		
 	}
 	
 	public synchronized Object lock_write(Client_itf client) throws RemoteException {
 		
-		System.out.println("taille liste lecteur" + this.listeDesLecteurs.size());
+		//System.out.println("taille liste lecteur" + this.listeDesLecteurs.size());
 		this.listeDesLecteurs.remove(client);
 		
 		Iterator<Client_itf> it = this.listeDesLecteurs.iterator() ;
@@ -89,7 +89,7 @@ public class ServerObject implements Serializable{
 		this.client_ecrivain=client;
 		
 		// va renvoyer un truc de ce genre
-		System.out.println("fin de lock_write : ");
+		//System.out.println("fin de lock_write : ");
 		return this.getObject();
 	}
 	
