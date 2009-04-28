@@ -9,11 +9,11 @@ public class Sentence_stub extends SharedObject implements Sentence_itf, java.io
 	private static final long serialVersionUID = 3173827029004946005L;
 	
 	public void write(String text) {
-		Sentence s = (Sentence)o;
+		Sentence s = (Sentence)obj;
 		s.write(text);
 	}
 	public String read() {
-		Sentence s = (Sentence)o;
+		Sentence s = (Sentence)obj;
 		return s.read();	
 	}
 	
