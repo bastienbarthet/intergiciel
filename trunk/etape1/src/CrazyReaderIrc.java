@@ -106,7 +106,7 @@ class ActionCrazyReader extends Thread {
 			irc.sentence.lock_read();
 
 			// invoke the method
-			String s = ((Sentence) (irc.sentence.o)).read();
+			String s = ((Sentence) (irc.sentence.obj)).read();
 
 			// unlock the object
 			irc.sentence.unlock();

@@ -43,13 +43,13 @@ public class Incrementer{
 			switch(op1){
 			case 1 :
 				entier.lock_write();
-				((Entier)(entier.o)).add(1);
+				((Entier)(entier.obj)).add(1);
                 		this.apport++;
                 		entier.unlock();
 				break;
 			default :
 				entier.lock_read();
-				((Entier)(entier.o)).read();
+				((Entier)(entier.obj)).read();
 				entier.unlock();
                                 break;
 			}
@@ -60,7 +60,7 @@ public class Incrementer{
 	private void affiche(){
         	System.out.println("Nombres d'inc effectuées : " + this.apport);
 		entier.lock_read();
-		System.out.println("Valeur dans l'incrémenteur : " + ((Entier)(entier.o)).read());
+		System.out.println("Valeur dans l'incrémenteur : " + ((Entier)(entier.obj)).read());
 		entier.unlock();
 		System.exit(0);
     }

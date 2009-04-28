@@ -100,7 +100,7 @@ class ActionCrazyWritter extends Thread {
 				irc.sentence.lock_write();
 
 				// invoke the method
-				((Sentence) (irc.sentence.o)).write(CrazyWriterIrc.myName
+				((Sentence) (irc.sentence.obj)).write(CrazyWriterIrc.myName
 						+ " wrote " + i++);
 
 				// unlock the object
