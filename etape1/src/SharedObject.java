@@ -33,7 +33,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	
 	
 	// objet sur lequel pointe le shared object
-	public Object o;
+	public Object obj;
 	//public Object getObject() {
 	//	return this.o;
 	//}
@@ -48,7 +48,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 	public SharedObject (int id, Object _o){
 		this.id = id;
 		this.lock = NL;
-		this.o = _o;
+		this.obj = _o;
 	}
 	
 	// invoked by the user program on the client node
@@ -59,7 +59,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			case RLC :	this.lock = RLT; break; 
 			case WLC : 	this.lock = RLT_WLC; break;
 			case NL : try {
-						this.o = Client.lock_read(this.getId());
+						this.obj = Client.lock_read(this.getId());
 						this.lock=RLT;
 					} catch (RemoteException e) {
 						e.printStackTrace();
@@ -84,7 +84,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		}
 		if (maj){
 			try {
-				this.o = Client.lock_write(this.getId());
+				this.obj = Client.lock_write(this.getId());
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -121,7 +121,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			default : break;
 		}
 		//System.out.println( "fin du reduce_lock : " +this.lock);
-		return this.o;
+		return this.obj;
 	}
 
 	
@@ -151,7 +151,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		this.lock = NL;
 		
 		//System.out.println( "fin du invalidate_writer : " +this.lock);
-		return this.o;	
+		return this.obj;	
 	}
 	
 }

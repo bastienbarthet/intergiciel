@@ -142,7 +142,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			} catch (InterruptedException e) {
 					e.printStackTrace();
 			}
-			return obj.o;
+			return obj.obj;
 		}
 	}
 }
