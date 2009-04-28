@@ -19,7 +19,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	
 	// attribut liste de type hashmap pour avoir l'ensemble des Shared Objects
 	// <id, sharedobject>
-	public static Hashtable<Integer, Object> listeObjets;
+	public static Hashtable<Integer, SharedObject> listeObjets;
 	
 	public static Client instance; 
 	
@@ -38,7 +38,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static void init() {
 		if (init) return;
 		try {
-			listeObjets = new Hashtable<Integer, Object>();
+			listeObjets = new Hashtable<Integer, SharedObject>();
 			// faire un lookup pr récup la ref du serveur
 			String URL = InetAddress.getLocalHost().getHostName();
 			server = (Server_itf) Naming.lookup("//"+URL+":/toto");
@@ -66,7 +66,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 				java.lang.reflect.Constructor constructeur = classe.getConstructor(new Class[] { int.class, Object.class });
 				//on renvoye l'objet cree
 				obj_stub = constructeur.newInstance(new Object[] { id, null });
-				listeObjets.put(id, obj_stub);
+				listeObjets.put(id, (SharedObject) obj_stub);
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -90,7 +90,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 				e.printStackTrace();
 			}
 
-			listeObjets.put(id, obj_stub);
+			listeObjets.put(id, (SharedObject) obj_stub);
 			return obj_stub;
 
 		}
@@ -117,31 +117,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			classe = Class.forName(o.getClass().getName() + "_stub");
 			java.lang.reflect.Constructor constructeur = classe.getConstructor(new Class[] { int.class, Object.class });
 			//on renvoye l'objet cree
-			obj_stub = constructeur.newInstance(new Object[] { id, o });	
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			obj_stub = constructeur.newInstance(new Object[] { id, o });
+			listeObjets.put(id, (SharedObject) obj_stub);
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
+		}		
 		return obj_stub;
 		
 		// creations du shared object a partir de l'id  renvoye par le create du server
@@ -169,9 +149,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	// receive a lock reduction request from the server
 	public Object reduce_lock(int id) throws java.rmi.RemoteException{
 		SharedObject obj = (SharedObject) listeObjets.get(id);
+		if (obj==null) System.out.println("c nul 2");
 		Object ob=null;
 		try {
 			if (obj!=null) ob = obj.reduce_lock();
+			if (obj==null) System.out.println("c nul 3");
 		} catch (InterruptedException e) {
 
 			e.printStackTrace();
@@ -186,6 +168,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		// il faut retrouver ds la hashtalbe le shared object qui a le num "id"
 		// et faire so.setLock(NL);
 		SharedObject obj = (SharedObject) listeObjets.get(id);
+		if (obj==null) System.out.println("c nul4");
 		if (obj!=null) {
 			try {
 				obj.invalidate_reader();
@@ -199,7 +182,9 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// receive a writer invalidation request from the server
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
+		
 		SharedObject obj = (SharedObject) listeObjets.get(id);
+		if (obj==null) System.out.println("c nul6");
 		if (obj==null) return null;
 		else {
 			try {
