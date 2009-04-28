@@ -68,7 +68,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			default : System.err.println("cas pas possible de verrou ds lock_read"); break;
 			}
 		}
-		System.out.println( "fin du lock_read : " +this.lock);
+		//System.out.println( "fin du lock_read : " +this.lock);
 	}
 
 	// invoked by the user program on the client node
@@ -90,7 +90,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			}
 		}
 		
-		System.out.println( "fin du lock_write : " +this.lock);
+		//System.out.println( "fin du lock_write : " +this.lock);
 	}
 
 	// invoked by the user program on the client node
@@ -102,7 +102,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			default : break;
 		}
 		notify();
-		System.out.println( "fin du unlock : " +this.lock);
+		//System.out.println( "fin du unlock : " +this.lock);
 	}
 
 
@@ -120,7 +120,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			case RLT_WLC : this.lock = RLT; break;
 			default : break;
 		}
-		System.out.println( "fin du reduce_lock : " +this.lock);
+		//System.out.println( "fin du reduce_lock : " +this.lock);
 		return this.o;
 	}
 
@@ -137,7 +137,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 			case RLC :  this.lock = NL; break;
 			default : break;
 		}
-		System.out.println( "fin du invalidate_reader : " +this.lock);
+		//System.out.println( "fin du invalidate_reader : " +this.lock);
 	}
 
 	public synchronized Object invalidate_writer() throws InterruptedException {
@@ -150,7 +150,7 @@ public class SharedObject implements Serializable, SharedObject_itf {
 		
 		this.lock = NL;
 		
-		System.out.println( "fin du invalidate_writer : " +this.lock);
+		//System.out.println( "fin du invalidate_writer : " +this.lock);
 		return this.o;	
 	}
 	
