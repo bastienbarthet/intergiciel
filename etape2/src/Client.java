@@ -36,7 +36,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 
 	// initialization of the client layer
 	public static void init() {
-		if (init) return;
+		if (init) return;		
 		try {
 			listeObjets = new Hashtable<Integer, SharedObject>();
 			// faire un lookup pr récup la ref du serveur
@@ -67,29 +67,10 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 				//on renvoye l'objet cree
 				obj_stub = constructeur.newInstance(new Object[] { id, null });
 				listeObjets.put(id, (SharedObject) obj_stub);
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			} 
+				
 			listeObjets.put(id, (SharedObject) obj_stub);
 			return obj_stub;
 
