@@ -16,7 +16,7 @@ public class GenerateurDeStub {
 	
 	}
 
-	private static void genererStub(Class classe) {
+	public static void genererStub(Class classe) {
 		String code;
 		String nomClasse = classe.getSimpleName();
 
@@ -28,10 +28,10 @@ public class GenerateurDeStub {
 		// Le constructeur
 		code += "	public " + nomClasse + "_stub(int id, Object o){ \n		super(id, o); \n	} \n \n";
 		
-		//tableau des méthodes de la classe
+		//tableau des mï¿½thodes de la classe
 		Method[] methodes = classe.getDeclaredMethods();
 		
-		// le code de chaque methode public, pas hérité
+		// le code de chaque methode public, pas hï¿½ritï¿½
 		for (int i = 0; i < methodes.length; i++) {
 			Method meth = methodes[i];
 			boolean estPublic = Modifier.isPublic(meth.getModifiers());    
@@ -42,7 +42,7 @@ public class GenerateurDeStub {
 	            Class[] params = meth.getParameterTypes();
 	            //params[j].getName();
 	            
-	         code += "	public " + nom +" "+ typeRetour + "(";
+	         code += "	public " + typeRetour +" "+ nom + "(";
 
 	         for(int j=0; j<params.length; j++ ){
 	        	 String typeAttribut = params[j].getSimpleName();
@@ -54,9 +54,9 @@ public class GenerateurDeStub {
       //corp de la mÃ©thode
 	         String valeurRetour = meth.getReturnType().toString();
 	         
-	      // on récupère l'objet partagé obj
+	      // on rï¿½cupï¿½re l'objet partagï¿½ obj
 				code += "		" + nomClasse + " o = (" + nomClasse + ") obj ; \n";
-	      // et on appelle la méthode avec les bons paramètres
+	      // et on appelle la mï¿½thode avec les bons paramï¿½tres
 				if (!typeRetour.equals("void")){
 					code += "		return ";
 				}
