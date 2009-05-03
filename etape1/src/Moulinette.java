@@ -7,7 +7,7 @@ public class Moulinette {
 	public static void main(String[] args) throws InterruptedException, RemoteException {
 
 		Random rdm = new Random();
-		
+
 		if(args.length != 1) {
 			System.out.println("java Moulinette <Name>");
 			return;
@@ -24,17 +24,17 @@ public class Moulinette {
 			s = Client.create(new Sentence());
 			Client.register("IRC", s);
 		}
-		
+
 		while(true){
-			
-//			Thread.sleep(100);
+
+			//			Thread.sleep(100);
 
 			if(rdm.nextBoolean()) {
 				// We read
 				s.lock_read();
-				
+
 				System.out.println("Read :" + ((Sentence)(s.obj)).read());
-				
+
 				s.unlock();
 
 			} else {

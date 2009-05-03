@@ -5,14 +5,11 @@ import java.rmi.RemoteException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-/**
- * @author yzimero
- * 
- */
+
+
 public class CrazyWriterIrc extends JFrame {
-	/**
-	 * 
-	 */
+
+	
 	private static final long serialVersionUID = 4392468196229185219L;
 	SharedObject sentence;
 	static String myName;
@@ -96,18 +93,18 @@ class ActionCrazyWritter extends Thread {
 				e.printStackTrace();
 			}
 
-				// lock the object in write mode
-				irc.sentence.lock_write();
+			// lock the object in write mode
+			irc.sentence.lock_write();
 
-				// invoke the method
-				((Sentence) (irc.sentence.obj)).write(CrazyWriterIrc.myName
-						+ " wrote " + i++);
+			// invoke the method
+			((Sentence) (irc.sentence.obj)).write(CrazyWriterIrc.myName
+					+ " wrote " + i++);
 
-				// unlock the object
-				//System.out.println(i);
-				irc.sentence.unlock();
+			// unlock the object
+			//System.out.println(i);
+			irc.sentence.unlock();
 
-			
+
 		}
 	}
 }
