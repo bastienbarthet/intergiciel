@@ -12,17 +12,17 @@ public class MoulinetteR {
 		}
 		int instNum = 0;
 		while(true){
-			
+
 			truc.lock_read();
 			String txt = ((Sentence)truc.obj).read();
 			truc.unlock();
-			
+
 			if(!txt.equals("")){
 				System.out.println("Lecture n�"+instNum+": \""+
 						txt+"\"");
 				instNum++;
 			}
-			
+
 		}
 	}
 
