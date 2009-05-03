@@ -4,37 +4,53 @@ import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+/**
+ * Classe du Client, stockant les SharedObject
+ * @author Bastiens Barthet&Lehmann
+ *
+ */
 public class Client extends UnicastRemoteObject implements Client_itf {
 
 	private static final long serialVersionUID = -6547940558906997763L;
-	
+
 	public static final int NL = 0;				// no local read
 	public static final int RLC = 1;			// real lock caches (not taken)
 	public static final int WLC = 2;			// write lock cached
 	public static final int RLT = 3;			// read lock taken
 	public static final int WLT = 4;			// write lock taken
 	public static final int RLT_WLC = 5;		// read lock taken and write lock cached
-	
+
 	private static boolean init = false ;
-	
-	// attribut liste de type hashmap pour avoir l'ensemble des Shared Objects
-	// <id, sharedobject>
+
+	/**
+	 * Liste des SharedObject avec leurs ID
+	 * 
+	 */
 	public static Hashtable<Integer, SharedObject> listeObjets;
-	
+
+	/**
+	 * Moi même
+	 */
 	public static Client instance; 
-	
+
 	private static Server_itf server;
-	
+
+	/**
+	 * constructeur
+	 * @throws RemoteException
+	 */
 	public Client() throws RemoteException {
 		super();
 	}
 
 
-///////////////////////////////////////////////////
-//         Interface to be used by applications
-///////////////////////////////////////////////////
+	///////////////////////////////////////////////////
+	//         Interface to be used by applications
+	///////////////////////////////////////////////////
 
-	// initialization of the client layer
+	/**
+	 * initialization of the client layer
+	 */
 	public static void init() {
 		if (init) return;		
 		try {
@@ -49,13 +65,17 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		}
 
 	}
-	
-	// lookup in the name server
+
+	/**
+	 * lookup in the name server
+	 * @param name
+	 * @return le SharedObject
+	 * @throws RemoteException
+	 */
 	public static Object lookup(String name) throws RemoteException {
-		// si on l'a, on le renvoi, sinon on le demande au serveur
 		Object obj_stub = null;
 		int id =  server.lookup(name);	
-		//System.out.println(id);
+
 		if (id==0) {
 			return null;
 		}
@@ -70,7 +90,6 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
-				
 			listeObjets.put(id, (SharedObject) obj_stub);
 			return obj_stub;
 
@@ -78,9 +97,12 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}		
 
 
-	// binding in the name server
+	/**
+	 * binding in the name server
+	 * @param name
+	 * @param so
+	 */
 	public static void register(String name, SharedObject_itf so) {
-		// on envoi un sharedobject o serveur, pour l'ajouter au partage
 		try {
 			server.register(name, ((SharedObject) so).getId());
 		} catch (Exception e) {
@@ -88,7 +110,11 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 		}
 	}
 
-	// creation of a shared object
+	/**
+	 * creation of a shared object
+	 * @param o l'Object
+	 * @return le SharedObject
+	 */
 	public static Object create(Object o) throws RemoteException {
 
 		Object obj_stub = null;
@@ -97,37 +123,38 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			int id = server.create(o);
 			classe = Class.forName(o.getClass().getName() + "_stub");
 			java.lang.reflect.Constructor constructeur = classe.getConstructor(new Class[] { int.class, Object.class });
-			//on renvoye l'objet cree
 			obj_stub = constructeur.newInstance(new Object[] { id, o });
 			listeObjets.put(id, (SharedObject) obj_stub);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
 		return obj_stub;
-		
-		// creations du shared object a partir de l'id  renvoye par le create du server
-		//int id = server.create(o);
-		//SharedObject so = new SharedObject(id, o);
-		//listeObjets.put(id, so);
-		//return so;
 	}
-	
-/////////////////////////////////////////////////////////////
-//    Interface to be used by the consistency protocol
-////////////////////////////////////////////////////////////
 
-	// request a read lock from the server
+	/////////////////////////////////////////////////////////////
+	//    Interface to be used by the consistency protocol
+	////////////////////////////////////////////////////////////
+	/**
+	 * request a read lock from the server
+	 */
 	public static Object lock_read(int id) throws RemoteException {
 		// demander au serveur si personne ecrit
 		return server.lock_read(id, instance);
 	}
 
-	// request a write lock from the server
+	/**
+	 * request a write lock from the server
+	 * @param id
+	 * @return
+	 * @throws RemoteException
+	 */
 	public static Object lock_write (int id) throws RemoteException {
 		return server.lock_write(id, instance);
 	}
 
-	// receive a lock reduction request from the server
+	/**
+	 * receive a lock reduction request from the server
+	 */
 	public Object reduce_lock(int id) throws java.rmi.RemoteException{
 		SharedObject obj = (SharedObject) listeObjets.get(id);
 		if (obj==null) System.out.println("c nul 2");
@@ -140,14 +167,14 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			e.printStackTrace();
 		}
 		return ob;
-		//return listeObjets.get(id).reduce_lock();
 	}
 
 
-	// receive a reader invalidation request from the server
+	/**
+	 * receive a reader invalidation request from the server
+	 * @param id
+	 */
 	public void invalidate_reader(int id) throws java.rmi.RemoteException {
-		// il faut retrouver ds la hashtalbe le shared object qui a le num "id"
-		// et faire so.setLock(NL);
 		SharedObject obj = (SharedObject) listeObjets.get(id);
 		if (obj==null) System.out.println("c nul4");
 		if (obj!=null) {
@@ -161,17 +188,20 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	}
 
 
-	// receive a writer invalidation request from the server
+	/**
+	 * receive a writer invalidation request from the server
+	 * @param id
+	 * @return Object
+	 */
 	public Object invalidate_writer(int id) throws java.rmi.RemoteException {
-		
+
 		SharedObject obj = (SharedObject) listeObjets.get(id);
-		if (obj==null) System.out.println("c nul6");
 		if (obj==null) return null;
 		else {
 			try {
 				obj.invalidate_writer();
 			} catch (InterruptedException e) {
-					e.printStackTrace();
+				e.printStackTrace();
 			}
 			return obj.obj;
 		}
