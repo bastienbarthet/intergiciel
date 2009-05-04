@@ -29,7 +29,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static Hashtable<Integer, SharedObject> listeObjets;
 
 	/**
-	 * Moi m�me
+	 * Moi m�me
 	 */
 	public static Client instance; 
 
@@ -60,6 +60,8 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			server = (Server_itf) Naming.lookup("//"+URL+":/toto");
 			init=true;
 			instance = new Client();
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -87,6 +89,16 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 				//on renvoye l'objet cree
 				obj_stub = constructeur.newInstance(new Object[] { id, null });
 				listeObjets.put(id, (SharedObject) obj_stub);
+				
+				
+				// On lance le générateur de Stub
+				GenerateurDeStub gen = new GenerateurDeStub();
+				gen.genererStub(classe);
+				// On compile le _stub.java
+				Runtime.getRuntime().exec("javac "+ classe + "_stub.java").waitFor();
+				
+				
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
@@ -116,12 +128,15 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	 * @return le SharedObject
 	 */
 	public static Object create(Object o) throws RemoteException {
+		
+	
 
 		Object obj_stub = null;
 		try {
 			Class classe;
 			int id = server.create(o);
 			classe = Class.forName(o.getClass().getName() + "_stub");
+					
 			java.lang.reflect.Constructor constructeur = classe.getConstructor(new Class[] { int.class, Object.class });
 			obj_stub = constructeur.newInstance(new Object[] { id, o });
 			listeObjets.put(id, (SharedObject) obj_stub);
