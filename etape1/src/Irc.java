@@ -9,16 +9,12 @@ import java.rmi.registry.*;
 
 
 public class Irc extends Frame {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4392468196229185219L;
 	public TextArea		text;
 	public TextField	data;
 	SharedObject		sentence;
 	static String		myName;
 
-	public static void main(String argv[]) throws RemoteException {
+	public static void main(String argv[]) {
 		
 		if (argv.length != 1) {
 			System.out.println("java Irc <name>");
@@ -34,7 +30,6 @@ public class Irc extends Frame {
 		SharedObject s = Client.lookup("IRC");
 		if (s == null) {
 			s = Client.create(new Sentence());
-			System.out.println(((Sentence) s.obj).read());
 			Client.register("IRC", s);
 		}
 		// create the graphical part
@@ -76,13 +71,12 @@ class readListener implements ActionListener {
 		irc = i;
 	}
 	public void actionPerformed (ActionEvent e) {
-
+		
 		// lock the object in read mode
 		irc.sentence.lock_read();
 		
 		// invoke the method
 		String s = ((Sentence)(irc.sentence.obj)).read();
-		
 		
 		// unlock the object
 		irc.sentence.unlock();
@@ -102,7 +96,7 @@ class writeListener implements ActionListener {
 		// get the value to be written from the buffer
         	String s = irc.data.getText();
         	
-        // lock the object in write mode
+        	// lock the object in write mode
 		irc.sentence.lock_write();
 		
 		// invoke the method

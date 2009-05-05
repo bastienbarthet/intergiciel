@@ -28,7 +28,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	public static Hashtable<Integer, SharedObject> listeObjets;
 
 	/**
-	 * Moi même
+	 * Moi mï¿½me
 	 */
 	public static Client instance; 
 
@@ -57,6 +57,7 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 			// faire un lookup pr rÃ©cup la ref du serveur
 			String URL = InetAddress.getLocalHost().getHostName();
 			server = (Server_itf) Naming.lookup("//"+URL+":/toto");
+			
 			init=true;
 			instance = new Client();
 		} catch (Exception e) {
@@ -71,9 +72,15 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	 * @return le SharedObject
 	 * @throws RemoteException
 	 */
-	public static SharedObject lookup(String name) throws RemoteException {
+	public static SharedObject lookup(String name){
 		// si on l'a, on le renvoi, sinon on le demande au serveur
-		int id =  server.lookup(name);	
+		int id = 0;
+		try {
+			id = server.lookup(name);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 		//System.out.println(id);
 		if (id==0) {
 			return null;
@@ -107,9 +114,15 @@ public class Client extends UnicastRemoteObject implements Client_itf {
 	 * @param o l'Object
 	 * @return le SharedObject
 	 */
-	public static SharedObject create(Object o) throws RemoteException {
-		// creations du shared object a partir de l'id  renvoyé par le create du server
-		int id = server.create(o);
+	public static SharedObject create(Object o) {
+		// creations du shared object a partir de l'id  renvoyï¿½ par le create du server
+		int id = 0;
+		try {
+			id = server.create(o);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		SharedObject so = new SharedObject(id, o);
 		listeObjets.put(id, so);
 		return so;
